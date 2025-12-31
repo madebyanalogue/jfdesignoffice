@@ -1,0 +1,139 @@
+/*——————————————————————————————————————————————————
+	WRAPPERS
+  ——————————————————————————————————————————————————*/
+  body {
+    margin:0 auto;
+    position:relative;
+    min-height:100vh;
+  }
+  body.mobile {
+    padding-bottom:40px;
+  }
+  
+  /*——————————————————————————————————————————————————
+    BUTTONS
+    ——————————————————————————————————————————————————*/
+  
+  .button {
+    cursor:pointer;
+    border: 2px solid #000;
+    font-weight:normal;
+    line-height: 1.6;
+    font-size:20px;
+    -webkit-appearance: none !important;
+    display: block;
+    width: 100%;
+    padding: 0px;
+    line-height: 33px;
+    text-transform: unset;
+    padding-top: 2px;
+  }
+  input {
+    width: 100%;
+    border-radius: 0px;
+    border: none;
+    font-size: 16px;
+    text-align: center;
+    padding: 10px 0px 7px 0px;
+    outline:none;
+    font-family:inherit;
+    transition: color 0s ease 9999s, background-color 0s ease 9999s;
+  }
+
+
+
+.split-parent {
+  overflow: visible;
+}
+
+
+.spacer {
+  display: block !important;
+}
+
+.proof {
+  background-image: url('../img/proof.png');
+  position: absolute;
+  height: 57.5vw;
+  width: 100%;
+  background-color: red;
+  background-size: 100%;
+  background-position: 0% 96%;
+  background-repeat: no-repeat;
+}
+
+
+.split-child > div {
+  position:relative;
+  display: inline-block;
+}
+
+.icon {
+  position:absolute;
+  height: 100%;
+}
+.icon svg {
+  display:block;
+}
+.icon-1 {
+  right: -13%;
+  height: 100%;
+  top: 50%;
+}
+.icon-2 {
+  left: 103%;
+  height: 100%;
+  top: -7%;
+}
+
+
+body:not(.ready) h2 > div {
+  opacity:0;
+}
+
+
+
+/*——————————————————————————————————————————————————
+  CURSOR
+  ——————————————————————————————————————————————————*/
+
+  .c-cursor {
+    position: fixed;
+    z-index: 9999; /* use highest z-index value */
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    width: 20px;
+    height: 20px;
+    transform:translate(50vw,50vh);
+  }
+
+  body.mobile .c-cursor {
+    display:none !important;
+  }
+  
+  .c-cursor__img {
+    width: 20px;
+    height: 20px;
+    display: block;
+    position: relative;
+    margin: -50% 0 0 -50%;
+    /* opacity: 0; */
+    --translate: 0;
+    --rotate: 0;
+    --skew: 0;
+    --scale: 0;
+    transform: translate3d(var(--translate-x, var(--translate)), var(--translate-y, var(--translate)), var(--translate-z, 0)) rotateX(var(--rotate-x, 0)) rotateY(var(--rotate-y, 0)) rotateZ(var(--rotate-z, var(--rotate))) skewX(var(--skew-x, var(--skew))) skewY(var(--skew-y, 0)) scaleX(var(--scale-x, var(--scale))) scaleY(var(--scale-y, var(--scale)));
+    transition: opacity 0.2s, transform 0.2s var(--ease-out);
+  }
+  .c-cursor--in .c-cursor__img { /* enter animation */
+    --scale: 1;
+    opacity: 1;
+  }
+  
+  @media (prefers-reduced-motion: no-preference) {
+    [data-custom-cursor],
+  [data-custom-cursor] * {
+      cursor: none;
+    }
+  }
