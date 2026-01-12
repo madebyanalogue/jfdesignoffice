@@ -1,0 +1,211 @@
+@font-face {
+  font-family: 'Bagoss Standard';
+  src: url('/fonts/BagossStandardTRIAL-Regular.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+/* Logo font - Ayer */
+@font-face {
+  font-family: 'Ayer';
+  src: url('/fonts/AyerRegular.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+@font-face {
+  font-family: 'Ayer';
+  src: url('/fonts/AyerRegularItalic.woff') format('woff');
+  font-weight: normal;
+  font-style: italic;
+  font-display: block;
+}
+
+:root {
+  /* Gutter */
+  --gutter: 15px;
+  
+  /* Font sizes */
+  --font-size-body: 12px;
+  --font-size-large: 18px;
+  --font-size-logo: 18px;
+  
+  /* Line height */
+  --line-height: 1.375;
+  
+  /* Aspect ratios */
+  --aspect-ratio-portrait: 3 / 4;
+  --aspect-ratio-square: 1 / 1;
+  --aspect-ratio-landscape: 4 / 3;
+  
+  /* Max width */
+  --max-width: 1800px;
+  
+  /* Colors (will be set dynamically via inline styles) */
+  --text-color: #000000;
+  --background-color: #ffffff;
+  
+  /* Font family */
+  --font-family: 'Bagoss Standard', sans-serif;
+  
+  /* Logo font family */
+  --logo-font-family: 'Ayer', sans-serif;
+}
+
+@media (min-width: 800px) {
+  :root {
+    --gutter: 20px;
+    --font-size-body: 16px;
+    --font-size-large: 21px;
+    --font-size-logo: 40px;
+  }
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-family: var(--font-family);
+  font-size: var(--font-size-body);
+  line-height: var(--line-height);
+  color: var(--text-color);
+  background-color: var(--background-color);
+  transition: color 0.6s ease, background-color 0.6s ease;
+}
+
+body {
+  font-family: var(--font-family);
+  font-size: var(--font-size-body);
+  line-height: var(--line-height);
+  color: var(--text-color);
+  background-color: var(--background-color);
+  transition: color 0.6s ease, background-color 0.6s ease;
+  font-display:block;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+.large {
+  font-size: var(--font-size-large);
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+#app {
+  min-height: 100vh;
+  max-width: var(--max-width);
+  margin: 0 auto;
+  color: var(--text-color);
+  background-color: var(--background-color);
+  transition: color 0.6s ease, background-color 0.6s ease;
+}
+
+.pad-1 {
+  padding: var(--gutter);
+}
+
+.logo {
+  font-family: var(--logo-font-family);
+  font-size: var(--font-size-logo);
+  color: currentColor;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.logo :deep(p) {
+  margin: 0;
+  display: inline;
+}
+
+/* Ensure logo link has no decoration */
+.logo :deep(a) {
+  text-decoration: none;
+  color: inherit;
+}
+
+.border-bottom {
+  border-bottom: 1px solid currentColor;
+}
+.border-top {
+  border-top: 1px solid currentColor;
+}
+
+.header {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+}
+
+.header-nav {
+  display: flex;
+  gap: var(--gutter);
+}
+
+.header-nav-right {
+  justify-content: end;
+}
+
+.header-logo {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.header-logo :deep(a) {
+  text-decoration: none;
+  color: inherit;
+}
+
+.header-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.footer {
+  padding: var(--gutter) 0;
+  line-height: 1.2;
+}
+.footer-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+}
+
+.footer-links {
+  display: flex;
+  flex-direction: column;
+}
+
+.footer-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.footer-back-to-top {
+  background: none;
+  border: none;
+  font-size: var(--font-size-large);
+  cursor: pointer;
+  color: inherit;
+  padding: 0;
+}
