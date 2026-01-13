@@ -11,6 +11,7 @@ export const useSiteSettings = () => {
       title,
       items[] {
         text,
+        textMobile,
         link {
           type,
           page-> {
@@ -26,6 +27,7 @@ export const useSiteSettings = () => {
       title,
       items[] {
         text,
+        textMobile,
         link {
           type,
           page-> {

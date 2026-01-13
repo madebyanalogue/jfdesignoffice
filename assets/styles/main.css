@@ -26,6 +26,7 @@
 :root {
   /* Gutter */
   --gutter: 15px;
+  --gutter-4x: calc(var(--gutter) * 4);
   
   /* Font sizes */
   --font-size-body: 12px;

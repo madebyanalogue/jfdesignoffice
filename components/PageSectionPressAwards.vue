@@ -1,8 +1,8 @@
 <template>
   <div class="press-awards-section">
     <div
-      v-for="item in section.pressAwardsContent"
-      :key="item._id"
+      v-for="(item, index) in section.pressAwardsContent"
+      :key="item._key || index"
       class="press-award-item"
     >
       <NuxtLink

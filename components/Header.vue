@@ -9,7 +9,9 @@
         :rel="isExternalUrl(item.link?.url) ? 'noopener' : undefined"
         class="header-link"
       >
-        {{ item.text }}
+        <span class="header-link-text-desktop">{{ item.text }}</span>
+        <span v-if="item.textMobile" class="header-link-text-mobile">{{ item.textMobile }}</span>
+        <span v-else class="header-link-text-mobile">{{ item.text }}</span>
       </NuxtLink>
     </nav>
     
@@ -28,7 +30,9 @@
         :rel="isExternalUrl(item.link?.url) ? 'noopener' : undefined"
         class="header-link"
       >
-        {{ item.text }}
+        <span class="header-link-text-desktop">{{ item.text }}</span>
+        <span v-if="item.textMobile" class="header-link-text-mobile">{{ item.textMobile }}</span>
+        <span v-else class="header-link-text-mobile">{{ item.text }}</span>
       </NuxtLink>
     </nav>
   </header>
@@ -61,6 +65,23 @@ const getMenuItemUrl = (item) => {
 </script>
 
 <style scoped>
+.header-link-text-desktop {
+  display: inline;
+}
 
+.header-link-text-mobile {
+  display: none;
+}
+
+/* Below 800px, show mobile text and hide desktop text */
+@media (max-width: 799px) {
+  .header-link-text-desktop {
+    display: none;
+  }
+  
+  .header-link-text-mobile {
+    display: inline;
+  }
+}
 </style>
 

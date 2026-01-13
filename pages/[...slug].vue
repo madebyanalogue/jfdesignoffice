@@ -77,11 +77,39 @@ const { data: page, pending, error } = useAsyncData(
           },
           format
         },
-        infoContent,
+        infoImage {
+          asset->
+        },
+        infoContent[] {
+          _type,
+          _key,
+          title,
+          text,
+          linkTitle,
+          link,
+          openInNewTab
+        },
+        servicesTitle,
         servicesContent,
-        pressAwardsContent[]-> {
-          _id,
-          featuredProject,
+        pressAwardsContent[] {
+          _key,
+          featuredProject {
+            type,
+            project-> {
+              _id,
+              title,
+              slug {
+                current
+              },
+              featuredImage {
+                asset->
+              }
+            },
+            customTitle,
+            customImage {
+              asset->
+            }
+          },
           publisher
         }
       }

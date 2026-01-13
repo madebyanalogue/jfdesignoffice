@@ -152,12 +152,17 @@ const { data: project } = useAsyncData(
   grid-template-columns: 1fr 1fr 1fr;
   gap: var(--gutter);
   margin-bottom: var(--gutter);
+  padding-bottom: var(--gutter-4x);
 }
 
 .portfolio-content {
   display: flex;
   flex-direction: column;
   gap: var(--gutter);
+}
+
+.portfolio-text-block {
+  padding-bottom: var(--gutter-4x);
 }
 
 .portfolio-image,
