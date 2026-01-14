@@ -57,7 +57,7 @@ const { data: projects } = useAsyncData('portfolio-section', async () => {
 <style scoped>
 .portfolio-section {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: 1fr;
   gap: var(--gutter);
   padding: 0 var(--gutter);
 }
@@ -91,14 +91,14 @@ const { data: projects } = useAsyncData('portfolio-section', async () => {
 }
 
 .portfolio-item-title {
-  margin-top: calc(var(--gutter) / 2);
+  margin-top: calc(var(--gutter) / 1.5);
   font-size: var(--font-size-body);
   font-weight: normal;
 }
 
-@media (max-width: 800px) {
+@media (min-width: 800px) {
   .portfolio-section {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(3, 1fr);
   }
 }
 </style>

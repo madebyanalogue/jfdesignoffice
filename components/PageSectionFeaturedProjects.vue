@@ -39,7 +39,7 @@ defineProps({
 <style scoped>
 .featured-projects {
   display: grid;
-  gap: var(--gutter);
+  gap: calc(var(--gutter) * 2);
   padding: 0 var(--gutter);
 }
 
@@ -86,8 +86,12 @@ defineProps({
   aspect-ratio: var(--aspect-ratio-portrait);
 }
 
+.format-landscapeSmall .featured-project-image-container {
+  max-width: 90%;
+}
+
 .featured-project-title {
-  margin-top: calc(var(--gutter) / 2);
+  margin-top: calc(var(--gutter) / 1.5);
   font-size: var(--font-size-body);
   font-weight: normal;
 }

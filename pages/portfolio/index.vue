@@ -19,8 +19,8 @@
               class="portfolio-item-image"
             />
           </div>
+          <h3 class="portfolio-item-title">{{ project.title }}</h3>
         </div>
-        <h3 class="portfolio-item-title">{{ project.title }}</h3>
       </NuxtLink>
     </div>
   </div>
@@ -84,7 +84,7 @@ const { data: projects } = useAsyncData('portfolio', async () => {
 }
 
 .portfolio-item-image-container {
-  aspect-ratio: 1/1;
+  aspect-ratio: var(--aspect-ratio-landscape);
   position: relative;
 }
 
@@ -124,18 +124,30 @@ const { data: projects } = useAsyncData('portfolio', async () => {
 }
 
 
-.format-portrait .portfolio-item-image-wrapper {
-  max-width: 74%;
-}
 .format-square .portfolio-item-image-wrapper {
   max-width: 74%;
 }
 
+.format-portrait .portfolio-item-image-wrapper {
+    height: 100%;
+    width: auto;
+    position: relative;
+    max-width: unset;
+  }
+
+
 .portfolio-item-title {
-  margin-top: calc(var(--gutter) / 2);
+  margin-top: calc(var(--gutter) / 1.5);
   font-size: var(--font-size-body);
   font-weight: normal;
   transition:opacity 0.3s ease;
+}
+
+
+@media (min-width: 800px) {
+  .portfolio-item-image-container {
+    aspect-ratio: var(--aspect-ratio-square);
+  }
 }
 </style>
 

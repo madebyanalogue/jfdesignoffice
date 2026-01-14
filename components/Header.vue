@@ -211,6 +211,8 @@ onUnmounted(() => {
   position: relative;
   z-index: 1000;
   background-color: var(--background-color);
+  color: var(--text-color);
+  transition: color 0.6s ease, background-color 0.6s ease;
   transform: translateY(0);
 }
 
