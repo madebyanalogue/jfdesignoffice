@@ -7,7 +7,7 @@
         :to="getMenuItemUrl(item)"
         :target="isExternalUrl(item.link?.url) ? '_blank' : undefined"
         :rel="isExternalUrl(item.link?.url) ? 'noopener' : undefined"
-        class="header-link"
+        :class="['header-link', { 'header-link-active': isActive(item) }]"
       >
         <span class="header-link-text-desktop">{{ item.text }}</span>
         <span v-if="item.textMobile" class="header-link-text-mobile">{{ item.textMobile }}</span>
@@ -28,7 +28,7 @@
         :to="getMenuItemUrl(item)"
         :target="isExternalUrl(item.link?.url) ? '_blank' : undefined"
         :rel="isExternalUrl(item.link?.url) ? 'noopener' : undefined"
-        class="header-link"
+        :class="['header-link', { 'header-link-active': isActive(item) }]"
       >
         <span class="header-link-text-desktop">{{ item.text }}</span>
         <span v-if="item.textMobile" class="header-link-text-mobile">{{ item.textMobile }}</span>
@@ -41,6 +41,7 @@
 <script setup>
 import { useSiteSettings } from '~/composables/useSiteSettings'
 
+const route = useRoute()
 const { leftMenu, rightMenu } = useSiteSettings()
 
 const leftMenuItems = computed(() => leftMenu.value?.items || [])
@@ -61,6 +62,18 @@ const getMenuItemUrl = (item) => {
     return item.link.url
   }
   return '#'
+}
+
+const isActive = (item) => {
+  const itemUrl = getMenuItemUrl(item)
+  if (!itemUrl || itemUrl === '#') return false
+  if (isExternalUrl(itemUrl)) return false
+  
+  // Normalize paths for comparison
+  const currentPath = route.path === '/' ? '/' : route.path.replace(/\/$/, '')
+  const normalizedItemUrl = itemUrl === '/' ? '/' : itemUrl.replace(/\/$/, '')
+  
+  return currentPath === normalizedItemUrl
 }
 </script>
 
@@ -90,7 +103,7 @@ const getMenuItemUrl = (item) => {
 .header-link:after {
   content: '';
   position: absolute;
-  bottom: 0px;
+  bottom: -3px;
   left: 0;
   width: 100%;
   height: 1px;
@@ -99,7 +112,8 @@ const getMenuItemUrl = (item) => {
   transition: transform 0.32s ease;
   background: currentColor;
 }
-.header-link:hover:after {
+.header-link:hover:after,
+.header-link-active:after {
   transform: scaleX(1);
 }
 </style>

@@ -85,33 +85,17 @@ const { data: page, pending, error } = useAsyncData(
           _key,
           title,
           text,
-          linkTitle,
-          link,
-          openInNewTab
+          links[] {
+            linkTitle,
+            subtitle,
+            link,
+            openInNewTab
+          },
+          content
         },
         servicesTitle,
-        servicesContent,
-        pressAwardsContent[] {
-          _key,
-          featuredProject {
-            type,
-            project-> {
-              _id,
-              title,
-              slug {
-                current
-              },
-              featuredImage {
-                asset->
-              }
-            },
-            customTitle,
-            customImage {
-              asset->
-            }
-          },
-          publisher
-        }
+        servicesClassName,
+        servicesContent
       }
     }`
     

@@ -34,7 +34,7 @@
   --font-size-logo: 18px;
   
   /* Line height */
-  --line-height: 1.375;
+  --line-height: 1.1;
   
   /* Aspect ratios */
   --aspect-ratio-portrait: 3 / 4;
@@ -59,7 +59,7 @@
   :root {
     --gutter: 20px;
     --font-size-body: 16px;
-    --font-size-large: 21px;
+    --font-size-large: 22px;
     --font-size-logo: 40px;
   }
 }
@@ -210,5 +210,13 @@ a {
   color: inherit;
   padding: 0;
 }
-
+.footer-back-to-top span {
+  position: relative;
+  transition: transform 0.3s ease;
+  display:block;
+}
+.footer-back-to-top:hover span {
+  transform: translateY(0);
+  transform: translateY(-3px);
+}
 

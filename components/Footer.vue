@@ -1,7 +1,7 @@
 <template>
   <footer class="footer">
     <div class="pad-1 border-bottom">
-      <button class="footer-back-to-top" @click="scrollToTop">↑</button>
+      <button class="footer-back-to-top" @click="scrollToTop"><span>↑</span></button>
     </div>
     <div class="pad-1 footer-content">
       <div class="footer-links" v-if="footerLinks && footerLinks.length > 0">

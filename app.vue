@@ -13,6 +13,13 @@ import { usePageSettings } from '~/composables/usePageSettings'
 const { maxWidth, seoTitle, seoDescription, facebookShareImage } = useSiteSettings()
 const { textColor, backgroundColor } = usePageSettings()
 
+// Inject initial colours into SSR so first paint uses custom colours
+useHead(() => ({
+  htmlAttrs: {
+    style: `--text-color: ${textColor.value || '#000000'}; --background-color: ${backgroundColor.value || '#ffffff'};`,
+  },
+}))
+
 const appStyles = computed(() => {
   return {
     '--max-width': maxWidth.value || '1800px',
@@ -57,7 +64,17 @@ const updateColors = (withTransition = true) => {
 
 // Set initial colors instantly when component mounts
 onMounted(() => {
-  updateColors(false)
+  // Only update if colors differ from what's already set via useHead
+  const html = document.documentElement
+  const currentTextColor = getComputedStyle(html).getPropertyValue('--text-color').trim()
+  const currentBgColor = getComputedStyle(html).getPropertyValue('--background-color').trim()
+  
+  // Only update if colors have changed (avoid unnecessary style changes)
+  if (currentTextColor !== (textColor.value || '#000000') || 
+      currentBgColor !== (backgroundColor.value || '#ffffff')) {
+    updateColors(false)
+  }
+  
   isInitialLoad.value = false
   previousPath = route.path
 })
@@ -73,13 +90,15 @@ watch(() => route.path, (newPath) => {
 
 // Watch color values - only transition if not initial load and route changed
 watch([textColor, backgroundColor], () => {
-  if (!isInitialLoad.value) {
-    updateColors(true)
-  } else {
-    // On initial load, set colors instantly
-    updateColors(false)
+  if (process.client) {
+    if (!isInitialLoad.value) {
+      updateColors(true)
+    } else {
+      // On initial load, set colors instantly
+      updateColors(false)
+    }
   }
-}, { immediate: true })
+}, { immediate: false })
 
 useHead({
   title: seoTitle.value || 'JF Design Office',

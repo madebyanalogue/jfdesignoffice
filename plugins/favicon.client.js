@@ -13,25 +13,19 @@ export default defineNuxtPlugin(async () => {
     
     const settings = result?.result
     
-    console.log('[Favicon] Settings:', settings)
-    
     const favicon = settings?.favicon
     if (!favicon?.asset?.url) {
-      console.log('[Favicon] No favicon found in settings')
       return
     }
     
     // Remove existing favicon links (including default Nuxt favicon)
     const existingLinks = document.querySelectorAll('link[rel*="icon"]')
     existingLinks.forEach(link => {
-      console.log('[Favicon] Removing existing link:', link.href)
       link.remove()
     })
     
     // Use the asset URL directly
     const faviconUrl = favicon.asset.url
-    
-    console.log('[Favicon] Setting favicon URL:', faviconUrl)
     
     // Determine MIME type based on extension
     const extension = favicon.asset.extension?.toLowerCase() || 'png'
@@ -51,7 +45,6 @@ export default defineNuxtPlugin(async () => {
     link.href = faviconUrl
     
     document.head.appendChild(link)
-    console.log('[Favicon] Favicon link added:', link.href)
     
   } catch (error) {
     console.error('[Favicon] Error loading favicon:', error)

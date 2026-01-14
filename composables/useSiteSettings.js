@@ -62,14 +62,7 @@ export const useSiteSettings = () => {
   }, { server: true }) // Ensure this runs on server for SSR
 
   const maxWidth = computed(() => settings.value?.maxWidth || '1800px')
-  const logo = computed(() => {
-    const logoData = settings.value?.logo || []
-    if (process.client) {
-      console.log('[useSiteSettings] Logo data:', logoData)
-      console.log('[useSiteSettings] Settings:', settings.value)
-    }
-    return logoData
-  })
+  const logo = computed(() => settings.value?.logo || [])
   const seoTitle = computed(() => settings.value?.seoTitle || 'JF Design Office')
   const seoDescription = computed(() => settings.value?.seoDescription || '')
   const facebookShareImage = computed(() => {

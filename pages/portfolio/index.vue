@@ -20,7 +20,7 @@
             />
           </div>
         </div>
-        <!-- <h2 class="portfolio-item-title">{{ project.title }}</h2> -->
+        <h3 class="portfolio-item-title">{{ project.title }}</h3>
       </NuxtLink>
     </div>
   </div>
@@ -75,6 +75,12 @@ const { data: projects } = useAsyncData('portfolio', async () => {
   .portfolio-archive {
     grid-template-columns: repeat(3, 1fr);
   }
+  .portfolio-item-title {
+    opacity:0;
+  }
+  .portfolio-item-link:hover .portfolio-item-title {
+    opacity:1;
+  }
 }
 
 .portfolio-item-image-container {
@@ -117,15 +123,19 @@ const { data: projects } = useAsyncData('portfolio', async () => {
   object-position: center;
 }
 
-.format-square .portfolio-item-image-wrapper img {
+
+.format-portrait .portfolio-item-image-wrapper {
   max-width: 74%;
-  max-height: 74%;
+}
+.format-square .portfolio-item-image-wrapper {
+  max-width: 74%;
 }
 
 .portfolio-item-title {
   margin-top: calc(var(--gutter) / 2);
   font-size: var(--font-size-body);
   font-weight: normal;
+  transition:opacity 0.3s ease;
 }
 </style>
 

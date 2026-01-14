@@ -38,7 +38,11 @@ export const usePageSettings = () => {
         body: { query, params },
       }).then(result => result?.result || null).catch(() => null)
     },
-    { watch: [pageSlug] }
+    {
+      watch: [pageSlug],
+      // Ensure we always fetch on the server for correct SSR colours
+      server: true,
+    }
   )
 
   const textColor = computed(() => page.value?.textColor || '#000000')

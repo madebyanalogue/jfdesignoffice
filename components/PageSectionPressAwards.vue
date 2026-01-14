@@ -1,51 +1,53 @@
 <template>
   <div class="press-awards-section">
     <div
-      v-for="(item, index) in section.pressAwardsContent"
-      :key="item._key || index"
+      v-for="(item, index) in pressAwards"
+      :key="item._id || index"
       class="press-award-item"
     >
-      <NuxtLink
-        v-if="item.featuredProject?.project?.slug?.current"
-        :to="`/portfolio/${item.featuredProject.project.slug.current}`"
-        class="press-award-link"
-      >
-        <NuxtImg
-          v-if="item.featuredProject?.project?.featuredImage?.asset"
-          :src="item.featuredProject.project.featuredImage.asset.url || ''"
-          :alt="item.featuredProject.project.title"
-          class="press-award-image"
-        />
-        <div class="press-award-info">
-          <h3 class="press-award-title">
-            {{ item.featuredProject?.project?.title || item.featuredProject?.customTitle }}
-          </h3>
-          <p class="press-award-publisher">{{ item.publisher }}</p>
-        </div>
-      </NuxtLink>
-      <div v-else class="press-award-link">
-        <NuxtImg
-          v-if="item.featuredProject?.customImage?.asset"
-          :src="item.featuredProject.customImage.asset.url || ''"
-          :alt="item.featuredProject.customTitle"
-          class="press-award-image"
-        />
-        <div class="press-award-info">
-          <h3 class="press-award-title">{{ item.featuredProject?.customTitle }}</h3>
-          <p class="press-award-publisher">{{ item.publisher }}</p>
-        </div>
-      </div>
+      <h3 v-if="item.title" class="press-award-title">{{ item.title }}</h3>
+      <p v-if="item.details" class="press-award-details">{{ item.details }}</p>
     </div>
   </div>
 </template>
 
 <script setup>
-defineProps({
-  section: {
-    type: Object,
-    required: true,
-  },
-})
+const { data: pressAwards } = useAsyncData('press-awards', async () => {
+  const query = `*[_type == "pressAward"] | order(orderRank) {
+    _id,
+    title,
+    details
+  }`
+  
+  if (process.server) {
+    const config = useRuntimeConfig()
+    const projectId = config.public.sanity?.projectId || 'kpljrloc'
+    const dataset = config.public.sanity?.dataset || 'production'
+    
+    try {
+      const result = await $fetch(`https://${projectId}.apicdn.sanity.io/v2021-10-21/data/query/${dataset}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ query }),
+      })
+      return result?.result || []
+    } catch (err) {
+      console.error('[PressAwards] Error fetching:', err)
+      return []
+    }
+  }
+  
+  try {
+    const result = await $fetch('/api/sanity/query', {
+      method: 'POST',
+      body: { query },
+    })
+    return result?.result || []
+  } catch (err) {
+    console.error('[PressAwards] Error fetching:', err)
+    return []
+  }
+}, { server: true })
 </script>
 
 <style scoped>
@@ -55,31 +57,23 @@ defineProps({
   gap: var(--gutter);
 }
 
-.press-award-link {
-  text-decoration: none;
-  color: inherit;
-  display: block;
-}
-
-.press-award-image {
-  width: 100%;
-  height: auto;
-  display: block;
-}
-
-.press-award-info {
-  margin-top: calc(var(--gutter) / 2);
+.press-award-item {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--gutter) / 2);
 }
 
 .press-award-title {
   font-size: var(--font-size-body);
   font-weight: normal;
-  margin-bottom: calc(var(--gutter) / 4);
+  margin-bottom: 0;
 }
 
-.press-award-publisher {
+.press-award-details {
   font-size: var(--font-size-body);
   opacity: 0.7;
+  margin: 0;
+  white-space: pre-line;
 }
 </style>
 

@@ -1,7 +1,9 @@
 <template>
-  <div class="services-section">
+  <div :class="['services-section', section.servicesClassName]">
     <h2 v-if="section.servicesTitle" class="services-title">{{ section.servicesTitle }}</h2>
-    <SanityBlocks :blocks="section.servicesContent" />
+    <div class="services-content">
+      <SanityBlocks :blocks="section.servicesContent" />
+    </div>
   </div>
 </template>
 
@@ -16,14 +18,22 @@ defineProps({
 
 <style scoped>
 .services-section {
-  max-width: 800px;
-  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--gutter);
+  padding: 0 var(--gutter);
 }
-
 .services-title {
-  font-size: var(--font-size-large);
   font-weight: normal;
-  margin-bottom: var(--gutter);
+}
+.services-content :deep(.sanity-blocks) {
+  font-size: var(--font-size-large);
+}
+.services-content :deep(.sanity-block) {
+  white-space: pre-line;
+}
+.services-content :deep(p) {
+  margin-bottom: 0;
 }
 </style>
 
