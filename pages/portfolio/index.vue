@@ -89,13 +89,10 @@ const { data: projects } = useAsyncData('portfolio', async () => {
 }
 
 .portfolio-item-image-wrapper {
-  width: 100%;
-  height: 100%;
   top: 0;
   left: 0;
   display: block;
-  position: absolute;
-  object-fit: contain;
+  position: relative;
 }
 
 .format-portrait .portfolio-item-image-wrapper {
@@ -113,12 +110,16 @@ const { data: projects } = useAsyncData('portfolio', async () => {
   object-fit: contain;
 }
 .portfolio-item-image-wrapper img {
-  max-width: 100%;
-  max-height: 100%;
+  width: 100%;
+  position: absolute;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
 }
 
 .format-square .portfolio-item-image-wrapper img {
   max-width: 74%;
+  max-height: 74%;
 }
 
 .portfolio-item-title {
