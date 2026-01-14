@@ -10,13 +10,17 @@
         :to="`/portfolio/${project.slug.current}`"
         class="portfolio-item-link"
       >
-        <NuxtImg
-          v-if="project.featuredImage?.asset"
-          :src="project.featuredImage.asset.url || ''"
-          :alt="project.title"
-          class="portfolio-item-image"
-        />
-        <h2 class="portfolio-item-title">{{ project.title }}</h2>
+        <div class="portfolio-item-image-container">
+          <div class="portfolio-item-image-wrapper">
+            <NuxtImg
+              v-if="project.featuredImage?.asset"
+              :src="project.featuredImage.asset.url || ''"
+              :alt="project.title"
+              class="portfolio-item-image"
+            />
+          </div>
+        </div>
+        <!-- <h2 class="portfolio-item-title">{{ project.title }}</h2> -->
       </NuxtLink>
     </div>
   </div>
@@ -73,6 +77,10 @@ const { data: projects } = useAsyncData('portfolio', async () => {
   }
 }
 
+.portfolio-item-image-container {
+  aspect-ratio: 1/1;
+  position: relative;
+}
 
 .portfolio-item-link {
   text-decoration: none;
@@ -80,25 +88,37 @@ const { data: projects } = useAsyncData('portfolio', async () => {
   display: block;
 }
 
-.portfolio-item-image {
+.portfolio-item-image-wrapper {
   width: 100%;
-  height: auto;
+  height: 100%;
+  top: 0;
+  left: 0;
   display: block;
+  position: absolute;
+  object-fit: contain;
 }
 
-.format-portrait .portfolio-item-image {
+.format-portrait .portfolio-item-image-wrapper {
   aspect-ratio: var(--aspect-ratio-portrait);
-  object-fit: cover;
+  object-fit: contain;
 }
 
-.format-landscape .portfolio-item-image {
+.format-landscape .portfolio-item-image-wrapper {
   aspect-ratio: var(--aspect-ratio-landscape);
-  object-fit: cover;
+  object-fit: contain;
 }
 
-.format-square .portfolio-item-image {
+.format-square .portfolio-item-image-wrapper {
   aspect-ratio: var(--aspect-ratio-square);
-  object-fit: cover;
+  object-fit: contain;
+}
+.portfolio-item-image-wrapper img {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.format-square .portfolio-item-image-wrapper img {
+  max-width: 74%;
 }
 
 .portfolio-item-title {

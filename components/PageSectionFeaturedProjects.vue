@@ -6,19 +6,23 @@
       class="featured-project"
       :class="`format-${item.format || 'landscape'}`"
     >
-      <NuxtLink
-        v-if="item.project?.slug?.current"
-        :to="`/portfolio/${item.project.slug.current}`"
-        class="featured-project-link"
-      >
-        <NuxtImg
-          v-if="item.project?.featuredImage?.asset"
-          :src="item.project.featuredImage.asset.url || ''"
-          :alt="item.project.title"
-          class="featured-project-image"
-        />
-        <h3 class="featured-project-title">{{ item.project.title }}</h3>
+        <NuxtLink
+          v-if="item.project?.slug?.current"
+          :to="`/portfolio/${item.project.slug.current}`"
+          class="featured-project-link"
+        >
+        <div class="featured-project-image-container">
+          <div class="featured-project-image-wrapper">
+              <NuxtImg
+                v-if="item.project?.featuredImage?.asset"
+                :src="item.project.featuredImage.asset.url || ''"
+                :alt="item.project.title"
+                class="featured-project-image"
+              />
+          </div>
+        </div>
       </NuxtLink>
+      <h3 class="featured-project-title">{{ item.project.title }}</h3>
     </div>
   </div>
 </template>
@@ -45,30 +49,41 @@ defineProps({
   display: block;
 }
 
+.featured-project-image-container {
+  aspect-ratio: 1400 / 935;
+  position: relative;
+}
+.featured-project-image-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
 .featured-project-image {
   width: 100%;
-  height: auto;
+  height: 100%;
   display: block;
+  object-fit: contain;
+  object-position: top left;
 }
 
 .format-landscape .featured-project-image {
   aspect-ratio: var(--aspect-ratio-landscape);
-  object-fit: cover;
 }
 
 .format-landscapeSmall .featured-project-image {
   aspect-ratio: var(--aspect-ratio-landscape);
-  object-fit: cover;
 }
 
 .format-square .featured-project-image {
   aspect-ratio: var(--aspect-ratio-square);
-  object-fit: cover;
 }
 
 .format-portrait .featured-project-image {
   aspect-ratio: var(--aspect-ratio-portrait);
-  object-fit: cover;
 }
 
 .featured-project-title {

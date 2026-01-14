@@ -62,6 +62,7 @@ const { data: projects } = useAsyncData('portfolio-section', async () => {
   padding: 0 var(--gutter);
 }
 
+
 .portfolio-item-link {
   text-decoration: none;
   color: inherit;
@@ -76,7 +77,7 @@ const { data: projects } = useAsyncData('portfolio-section', async () => {
 
 .format-portrait .portfolio-item-image {
   aspect-ratio: var(--aspect-ratio-portrait);
-  object-fit: cover;
+  object-fit: contain;
 }
 
 .format-landscape .portfolio-item-image {

@@ -1,6 +1,6 @@
 <template>
   <header class="header border-bottom pad-1">
-    <nav class="header-nav header-nav-left">
+    <nav class="header-nav header-nav-left underline-links">
       <NuxtLink
         v-for="item in leftMenuItems"
         :key="item._key || item.text"
@@ -21,7 +21,7 @@
       </NuxtLink>
     </div>
     
-    <nav class="header-nav header-nav-right">
+    <nav class="header-nav header-nav-right underline-links">
       <NuxtLink
         v-for="item in rightMenuItems"
         :key="item._key || item.text"
@@ -82,6 +82,25 @@ const getMenuItemUrl = (item) => {
   .header-link-text-mobile {
     display: inline;
   }
+}
+.header-link {
+  position: relative;
+  display: inline-block;
+}
+.header-link:after {
+  content: '';
+  position: absolute;
+  bottom: 0px;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.32s ease;
+  background: currentColor;
+}
+.header-link:hover:after {
+  transform: scaleX(1);
 }
 </style>
 

@@ -8,7 +8,7 @@
       />
     </div>
     
-    <div class="portfolio-info">
+    <div class="portfolio-info underline-links">
       <div class="portfolio-info-column">
         <h1 class="portfolio-title">{{ project.title }}</h1>
       </div>
@@ -42,7 +42,7 @@
           />
         </div>
         
-        <div v-else-if="block._type === 'textBlock' && block.text" class="portfolio-text-block">
+        <div v-else-if="block._type === 'textBlock' && block.text" class="portfolio-text-block underline-links">
           <SanityBlocks :blocks="block.text" />
         </div>
         
@@ -139,6 +139,7 @@ const { data: project } = useAsyncData(
 
 .portfolio-hero {
   margin-bottom: var(--gutter);
+  padding: 0px var(--gutter);
 }
 
 .portfolio-hero-image {
@@ -151,14 +152,17 @@ const { data: project } = useAsyncData(
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   gap: var(--gutter);
+  padding: 0px var(--gutter);
   margin-bottom: var(--gutter);
-  padding-bottom: var(--gutter-4x);
+  padding-bottom: calc(var(--gutter) * 3);
+
 }
 
 .portfolio-content {
   display: flex;
   flex-direction: column;
   gap: var(--gutter);
+  padding: 0px var(--gutter);
 }
 
 .portfolio-text-block {
