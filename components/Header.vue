@@ -1,5 +1,5 @@
 <template>
-  <header class="header border-bottom pad-1">
+  <header :class="['header', 'border-bottom', 'pad-1', { 'header-sticky': isPastHeader, 'header-hidden': isScrollingDown, 'header-transition': shouldAddTransition }]">
     <nav class="header-nav header-nav-left underline-links">
       <NuxtLink
         v-for="item in leftMenuItems"
@@ -75,6 +75,94 @@ const isActive = (item) => {
   
   return currentPath === normalizedItemUrl
 }
+
+// Scroll detection for header hide/show
+const isScrollingDown = ref(false)
+const isPastHeader = ref(false)
+const shouldAddTransition = ref(false)
+const headerHeight = ref(0)
+let lastScrollY = 0
+let ticking = false
+
+const handleScroll = () => {
+  if (!process.client) return
+  
+  const currentScrollY = window.scrollY
+  
+  // Only update if scroll position changed significantly (avoid jitter)
+  if (Math.abs(currentScrollY - lastScrollY) < 5) {
+    ticking = false
+    return
+  }
+  
+  const headerEl = document.querySelector('.header')
+  if (!headerEl) {
+    ticking = false
+    return
+  }
+  
+  // Get header height if not set
+  if (headerHeight.value === 0) {
+    headerHeight.value = headerEl.offsetHeight
+  }
+  
+  // Check if we've scrolled past the full header height
+  const hasScrolledPastHeader = currentScrollY >= headerHeight.value
+  // Increased threshold for transition (e.g., 2x header height)
+  const transitionThreshold = headerHeight.value * 2
+  
+  // At the very top - header goes back to relative
+  if (currentScrollY <= 0) {
+    isPastHeader.value = false
+    shouldAddTransition.value = false
+    isScrollingDown.value = false
+  } 
+  // Once we've scrolled past header, it becomes sticky and stays sticky
+  else if (hasScrolledPastHeader || isPastHeader.value) {
+    // Once past header, always stay sticky (even when scrolling back up into header zone)
+    isPastHeader.value = true
+    
+    // Only add transition after scrolling past the increased threshold
+    shouldAddTransition.value = currentScrollY >= transitionThreshold
+    
+    // Show header when scrolling up
+    if (currentScrollY < lastScrollY) {
+      isScrollingDown.value = false
+    } 
+    // Hide header when scrolling down
+    else if (currentScrollY > lastScrollY) {
+      isScrollingDown.value = true
+    }
+  } else {
+    // Before scrolling past header for the first time, always show (relative positioning)
+    isPastHeader.value = false
+    shouldAddTransition.value = false
+    isScrollingDown.value = false
+  }
+  
+  lastScrollY = currentScrollY
+  ticking = false
+}
+
+const onScroll = () => {
+  if (!ticking) {
+    window.requestAnimationFrame(handleScroll)
+    ticking = true
+  }
+}
+
+onMounted(() => {
+  if (process.client) {
+    lastScrollY = window.scrollY
+    window.addEventListener('scroll', onScroll, { passive: true })
+  }
+})
+
+onUnmounted(() => {
+  if (process.client) {
+    window.removeEventListener('scroll', onScroll)
+  }
+})
 </script>
 
 <style scoped>
@@ -118,3 +206,24 @@ const isActive = (item) => {
 }
 </style>
 
+<style>
+.header {
+  position: relative;
+  z-index: 1000;
+  background-color: var(--background-color);
+  transform: translateY(0);
+}
+
+.header.header-sticky {
+  position: sticky;
+  top: 0;
+}
+
+.header.header-transition {
+  transition: transform 0.3s ease;
+}
+
+.header.header-hidden {
+  transform: translateY(-100%);
+}
+</style>
