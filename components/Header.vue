@@ -191,7 +191,7 @@ onUnmounted(() => {
 .header-link:after {
   content: '';
   position: absolute;
-  bottom: -3px;
+  bottom: var(--underline-offset);
   left: 0;
   width: 100%;
   height: 1px;

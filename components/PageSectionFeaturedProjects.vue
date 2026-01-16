@@ -21,8 +21,8 @@
               />
           </div>
         </div>
+        <h3 class="featured-project-title"><span>{{ item.project.title }}</span></h3>
       </NuxtLink>
-      <h3 class="featured-project-title">{{ item.project.title }}</h3>
     </div>
   </div>
 </template>
@@ -94,6 +94,26 @@ defineProps({
   margin-top: calc(var(--gutter) / 1.5);
   font-size: var(--font-size-body);
   font-weight: normal;
+}
+
+.featured-project-title span {
+  display: inline-block;
+  position: relative;
+}
+.featured-project-title span:after {
+  content: '';
+  position: absolute;
+  bottom: var(--underline-offset);
+  left: 0;
+  width: 100%;
+  height: 1px;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.32s ease;
+  background: currentColor;
+}
+.featured-project-link:hover .featured-project-title span:after {
+  transform: scaleX(1);
 }
 </style>
 

@@ -53,6 +53,9 @@
   
   /* Logo font family */
   --logo-font-family: 'Ayer', sans-serif;
+  
+  /* Underline offset */
+  --underline-offset: -3px;
 }
 
 @media (min-width: 800px) {
