@@ -24,17 +24,29 @@
 }
 
 :root {
+
+  --mobile-breakpoint: 800;
+
   /* Gutter */
-  --gutter: 15px;
-  --gutter-4x: calc(var(--gutter) * 4);
+  --gutter-mobile: 15;
+  --gutter-desktop: 20;
+  --gutter: clamp(calc(var(--gutter-mobile) * 1px), calc(100vw / calc(var(--mobile-breakpoint) / var(--gutter-desktop))), calc(var(--gutter-desktop) * 1px));
   
   /* Font sizes */
-  --font-size-body: 12px;
-  --font-size-large: 18px;
-  --font-size-logo: 18px;
+  --font-size-body-mobile: 12;
+  --font-size-large-mobile: 18;
+  --font-size-logo-mobile: 14;
+
+  --font-size-body-desktop: 16;
+  --font-size-large-desktop: 22;
+  --font-size-logo-desktop: 40;
+
+  --font-size-body: clamp(calc(var(--font-size-body-mobile) * 1px), calc(100vw / calc(var(--mobile-breakpoint) / var(--font-size-body-desktop))), calc(var(--font-size-body-desktop) * 1px));
+  --font-size-large: clamp(calc(var(--font-size-large-mobile) * 1px), calc(100vw / calc(var(--mobile-breakpoint) / var(--font-size-large-desktop))), calc(var(--font-size-large-desktop) * 1px));
+  --font-size-logo: clamp(calc(var(--font-size-logo-mobile) * 1px), calc(100vw / calc(var(--mobile-breakpoint) / var(--font-size-logo-desktop))), calc(var(--font-size-logo-desktop) * 1px));
   
   /* Line height */
-  --line-height: 1.1;
+  --line-height: 1.2;
   
   /* Aspect ratios */
   --aspect-ratio-portrait: 3 / 4;
@@ -56,15 +68,9 @@
   
   /* Underline offset */
   --underline-offset: -3px;
-}
-
-@media (min-width: 800px) {
-  :root {
-    --gutter: 20px;
-    --font-size-body: 16px;
-    --font-size-large: 22px;
-    --font-size-logo: 40px;
-  }
+  
+  /* Header height (will be set dynamically via inline styles) */
+  --header-height: 0px;
 }
 
 * {

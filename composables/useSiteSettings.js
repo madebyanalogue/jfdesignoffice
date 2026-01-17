@@ -4,6 +4,17 @@ export const useSiteSettings = () => {
     logo,
     seoTitle,
     seoDescription,
+    headerType,
+    mobileBreakpoint,
+    gutterMobile,
+    gutterDesktop,
+    fontSizeBodyMobile,
+    fontSizeLargeMobile,
+    fontSizeLogoMobile,
+    fontSizeBodyDesktop,
+    fontSizeLargeDesktop,
+    fontSizeLogoDesktop,
+    lineHeight,
     facebookShareImage {
       asset->
     },
@@ -74,6 +85,17 @@ export const useSiteSettings = () => {
   const leftMenu = computed(() => settings.value?.leftMenu)
   const rightMenu = computed(() => settings.value?.rightMenu)
   const footerLinks = computed(() => settings.value?.footerLinks || [])
+  const headerType = computed(() => settings.value?.headerType || 'responsive')
+  const mobileBreakpoint = computed(() => settings.value?.mobileBreakpoint ?? 800)
+  const gutterMobile = computed(() => settings.value?.gutterMobile ?? 15)
+  const gutterDesktop = computed(() => settings.value?.gutterDesktop ?? 20)
+  const fontSizeBodyMobile = computed(() => settings.value?.fontSizeBodyMobile ?? 12)
+  const fontSizeLargeMobile = computed(() => settings.value?.fontSizeLargeMobile ?? 18)
+  const fontSizeLogoMobile = computed(() => settings.value?.fontSizeLogoMobile ?? 14)
+  const fontSizeBodyDesktop = computed(() => settings.value?.fontSizeBodyDesktop ?? 16)
+  const fontSizeLargeDesktop = computed(() => settings.value?.fontSizeLargeDesktop ?? 22)
+  const fontSizeLogoDesktop = computed(() => settings.value?.fontSizeLogoDesktop ?? 40)
+  const lineHeight = computed(() => settings.value?.lineHeight ?? 1.1)
   const copyright = computed(() => {
     const text = settings.value?.copyright || ''
     const currentYear = new Date().getFullYear()
@@ -89,6 +111,17 @@ export const useSiteSettings = () => {
     leftMenu,
     rightMenu,
     footerLinks,
+    headerType,
+    mobileBreakpoint,
+    gutterMobile,
+    gutterDesktop,
+    fontSizeBodyMobile,
+    fontSizeLargeMobile,
+    fontSizeLogoMobile,
+    fontSizeBodyDesktop,
+    fontSizeLargeDesktop,
+    fontSizeLogoDesktop,
+    lineHeight,
     copyright,
   }
 }

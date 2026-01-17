@@ -150,6 +150,8 @@ const shouldOpenInNewTab = (link, openInNewTab) => {
   width: 100%;
   height: auto;
   display: block;
+  position: sticky;
+  top: calc(var(--header-height) + var(--gutter));
 }
 
 .info-section-content {

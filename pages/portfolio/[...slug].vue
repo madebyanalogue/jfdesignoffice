@@ -166,7 +166,7 @@ const { data: project } = useAsyncData(
 }
 
 .portfolio-text-block {
-  padding-bottom: var(--gutter-4x);
+  padding-bottom: calc(var(--gutter) * 4);
 }
 
 .portfolio-image,

@@ -10,19 +10,58 @@
 import { useSiteSettings } from '~/composables/useSiteSettings'
 import { usePageSettings } from '~/composables/usePageSettings'
 
-const { maxWidth, seoTitle, seoDescription, facebookShareImage } = useSiteSettings()
+const { 
+  maxWidth, 
+  seoTitle, 
+  seoDescription, 
+  facebookShareImage,
+  mobileBreakpoint,
+  gutterMobile,
+  gutterDesktop,
+  fontSizeBodyMobile,
+  fontSizeLargeMobile,
+  fontSizeLogoMobile,
+  fontSizeBodyDesktop,
+  fontSizeLargeDesktop,
+  fontSizeLogoDesktop,
+  lineHeight,
+} = useSiteSettings()
 const { textColor, backgroundColor } = usePageSettings()
 
-// Inject initial colours into SSR so first paint uses custom colours
+// Inject initial colours, header height, and typography variables into SSR so first paint uses custom values
 useHead(() => ({
   htmlAttrs: {
-    style: `--text-color: ${textColor.value || '#000000'}; --background-color: ${backgroundColor.value || '#ffffff'};`,
+    style: `
+      --text-color: ${textColor.value || '#000000'}; 
+      --background-color: ${backgroundColor.value || '#ffffff'}; 
+      --header-height: 0px;
+      --mobile-breakpoint: ${mobileBreakpoint.value};
+      --gutter-mobile: ${gutterMobile.value};
+      --gutter-desktop: ${gutterDesktop.value};
+      --font-size-body-mobile: ${fontSizeBodyMobile.value};
+      --font-size-large-mobile: ${fontSizeLargeMobile.value};
+      --font-size-logo-mobile: ${fontSizeLogoMobile.value};
+      --font-size-body-desktop: ${fontSizeBodyDesktop.value};
+      --font-size-large-desktop: ${fontSizeLargeDesktop.value};
+      --font-size-logo-desktop: ${fontSizeLogoDesktop.value};
+      --line-height: ${lineHeight.value};
+    `,
   },
 }))
 
 const appStyles = computed(() => {
   return {
     '--max-width': maxWidth.value || '1800px',
+    '--mobile-breakpoint': `${mobileBreakpoint.value}`,
+    '--gutter-mobile': `${gutterMobile.value}`,
+    '--gutter-desktop': `${gutterDesktop.value}`,
+    '--font-size-body-mobile': `${fontSizeBodyMobile.value}`,
+    '--font-size-large-mobile': `${fontSizeLargeMobile.value}`,
+    '--font-size-logo-mobile': `${fontSizeLogoMobile.value}`,
+    '--font-size-body-desktop': `${fontSizeBodyDesktop.value}`,
+    '--font-size-large-desktop': `${fontSizeLargeDesktop.value}`,
+    '--font-size-logo-desktop': `${fontSizeLogoDesktop.value}`,
+    '--line-height': `${lineHeight.value}`,
   }
 })
 
@@ -62,8 +101,37 @@ const updateColors = (withTransition = true) => {
   }
 }
 
+// Update typography CSS variables
+const updateTypography = () => {
+  if (process.client) {
+    const html = document.documentElement
+    html.style.setProperty('--mobile-breakpoint', `${mobileBreakpoint.value}`)
+    html.style.setProperty('--gutter-mobile', `${gutterMobile.value}`)
+    html.style.setProperty('--gutter-desktop', `${gutterDesktop.value}`)
+    html.style.setProperty('--font-size-body-mobile', `${fontSizeBodyMobile.value}`)
+    html.style.setProperty('--font-size-large-mobile', `${fontSizeLargeMobile.value}`)
+    html.style.setProperty('--font-size-logo-mobile', `${fontSizeLogoMobile.value}`)
+    html.style.setProperty('--font-size-body-desktop', `${fontSizeBodyDesktop.value}`)
+    html.style.setProperty('--font-size-large-desktop', `${fontSizeLargeDesktop.value}`)
+    html.style.setProperty('--font-size-logo-desktop', `${fontSizeLogoDesktop.value}`)
+    html.style.setProperty('--line-height', `${lineHeight.value}`)
+  }
+}
+
+// Update header height CSS variable (responsive)
+const updateHeaderHeight = () => {
+  if (process.client) {
+    const header = document.querySelector('.header')
+    if (header) {
+      const height = header.offsetHeight
+      // Set on html element for global access
+      document.documentElement.style.setProperty('--header-height', `${height}px`)
+    }
+  }
+}
+
 // Set initial colors instantly when component mounts
-onMounted(() => {
+onMounted(async () => {
   // Only update if colors differ from what's already set via useHead
   const html = document.documentElement
   const currentTextColor = getComputedStyle(html).getPropertyValue('--text-color').trim()
@@ -75,6 +143,35 @@ onMounted(() => {
     updateColors(false)
   }
   
+  // Set initial header height (use nextTick to ensure header is rendered)
+  await nextTick()
+  updateHeaderHeight()
+  
+  // Update typography variables
+  updateTypography()
+  
+  // Update header height on resize using ResizeObserver for efficiency
+  const resizeObserver = new ResizeObserver(() => {
+    updateHeaderHeight()
+  })
+  
+  const header = document.querySelector('.header')
+  if (header) {
+    resizeObserver.observe(header)
+  }
+  
+  // Also listen to window resize as fallback
+  const handleResize = () => {
+    updateHeaderHeight()
+  }
+  window.addEventListener('resize', handleResize, { passive: true })
+  
+  // Cleanup
+  onUnmounted(() => {
+    resizeObserver.disconnect()
+    window.removeEventListener('resize', handleResize)
+  })
+  
   isInitialLoad.value = false
   previousPath = route.path
 })
@@ -84,6 +181,8 @@ watch(() => route.path, (newPath) => {
   if (!isInitialLoad.value && newPath !== previousPath) {
     // On navigation, allow transitions
     updateColors(true)
+    // Update header height in case it changed
+    updateHeaderHeight()
   }
   previousPath = newPath
 })
@@ -97,6 +196,24 @@ watch([textColor, backgroundColor], () => {
       // On initial load, set colors instantly
       updateColors(false)
     }
+  }
+}, { immediate: false })
+
+// Watch typography values and update CSS variables
+watch([
+  mobileBreakpoint,
+  gutterMobile,
+  gutterDesktop,
+  fontSizeBodyMobile,
+  fontSizeLargeMobile,
+  fontSizeLogoMobile,
+  fontSizeBodyDesktop,
+  fontSizeLargeDesktop,
+  fontSizeLogoDesktop,
+  lineHeight,
+], () => {
+  if (process.client) {
+    updateTypography()
   }
 }, { immediate: false })
 

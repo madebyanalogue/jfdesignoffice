@@ -1,5 +1,11 @@
 <template>
-  <header :class="['header', 'border-bottom', 'pad-1', { 'header-sticky': isPastHeader, 'header-hidden': isScrollingDown, 'header-transition': shouldAddTransition }]">
+  <header :class="['header', 'border-bottom', 'pad-1', { 
+    'header-static': headerType === 'static',
+    'header-fixed': headerType === 'fixed',
+    'header-sticky': headerType === 'responsive' && isPastHeader, 
+    'header-hidden': headerType === 'responsive' && isScrollingDown, 
+    'header-transition': headerType === 'responsive' && shouldAddTransition 
+  }]">
     <nav class="header-nav header-nav-left underline-links">
       <NuxtLink
         v-for="item in leftMenuItems"
@@ -42,7 +48,7 @@
 import { useSiteSettings } from '~/composables/useSiteSettings'
 
 const route = useRoute()
-const { leftMenu, rightMenu } = useSiteSettings()
+const { leftMenu, rightMenu, headerType } = useSiteSettings()
 
 const leftMenuItems = computed(() => leftMenu.value?.items || [])
 const rightMenuItems = computed(() => rightMenu.value?.items || [])
@@ -85,7 +91,11 @@ let lastScrollY = 0
 let ticking = false
 
 const handleScroll = () => {
-  if (!process.client) return
+  // Only run scroll logic for responsive header type
+  if (!process.client || headerType.value !== 'responsive') {
+    ticking = false
+    return
+  }
   
   const currentScrollY = window.scrollY
   
@@ -152,14 +162,16 @@ const onScroll = () => {
 }
 
 onMounted(() => {
-  if (process.client) {
+  // Only add scroll listener for responsive header type
+  if (process.client && headerType.value === 'responsive') {
     lastScrollY = window.scrollY
     window.addEventListener('scroll', onScroll, { passive: true })
   }
 })
 
 onUnmounted(() => {
-  if (process.client) {
+  // Only remove scroll listener if it was added (responsive header type)
+  if (process.client && headerType.value === 'responsive') {
     window.removeEventListener('scroll', onScroll)
   }
 })
@@ -214,6 +226,15 @@ onUnmounted(() => {
   color: var(--text-color);
   transition: color 0.6s ease, background-color 0.6s ease;
   transform: translateY(0);
+}
+
+.header.header-static {
+  position: relative;
+}
+
+.header.header-fixed {
+  position: sticky;
+  top: 0;
 }
 
 .header.header-sticky {
