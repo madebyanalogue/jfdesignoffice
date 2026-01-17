@@ -25,12 +25,14 @@ const {
   fontSizeLargeDesktop,
   fontSizeLogoDesktop,
   lineHeight,
+  headerType,
 } = useSiteSettings()
 const { textColor, backgroundColor } = usePageSettings()
 
 // Inject initial colours, header height, and typography variables into SSR so first paint uses custom values
 useHead(() => ({
   htmlAttrs: {
+    class: headerType.value === 'static' ? 'header-static' : '',
     style: `
       --text-color: ${textColor.value || '#000000'}; 
       --background-color: ${backgroundColor.value || '#ffffff'}; 
@@ -125,6 +127,7 @@ const updateHeaderHeight = () => {
     if (header) {
       const height = header.offsetHeight
       // Set on html element for global access
+      // Always calculate, but CSS class controls whether it's used
       document.documentElement.style.setProperty('--header-height', `${height}px`)
     }
   }
@@ -149,6 +152,19 @@ onMounted(async () => {
   
   // Update typography variables
   updateTypography()
+  
+  // Update header type class on html element
+  const updateHeaderTypeClass = () => {
+    if (process.client) {
+      const html = document.documentElement
+      if (headerType.value === 'static') {
+        html.classList.add('header-static')
+      } else {
+        html.classList.remove('header-static')
+      }
+    }
+  }
+  updateHeaderTypeClass()
   
   // Update header height on resize using ResizeObserver for efficiency
   const resizeObserver = new ResizeObserver(() => {
@@ -214,6 +230,18 @@ watch([
 ], () => {
   if (process.client) {
     updateTypography()
+  }
+}, { immediate: false })
+
+// Watch header type and update class
+watch(headerType, () => {
+  if (process.client) {
+    const html = document.documentElement
+    if (headerType.value === 'static') {
+      html.classList.add('header-static')
+    } else {
+      html.classList.remove('header-static')
+    }
   }
 }, { immediate: false })
 

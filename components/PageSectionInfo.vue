@@ -151,7 +151,13 @@ const shouldOpenInNewTab = (link, openInNewTab) => {
   height: auto;
   display: block;
   position: sticky;
+  /* Default: account for header height */
   top: calc(var(--header-height) + var(--gutter));
+}
+
+/* When header is static, don't account for header height */
+:global(.header-static) .info-image {
+  top: var(--gutter);
 }
 
 .info-section-content {

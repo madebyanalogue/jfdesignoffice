@@ -35,7 +35,7 @@
   /* Font sizes */
   --font-size-body-mobile: 12;
   --font-size-large-mobile: 18;
-  --font-size-logo-mobile: 14;
+  --font-size-logo-mobile: 18;
 
   --font-size-body-desktop: 16;
   --font-size-large-desktop: 22;
@@ -45,6 +45,8 @@
   --font-size-large: clamp(calc(var(--font-size-large-mobile) * 1px), calc(100vw / calc(var(--mobile-breakpoint) / var(--font-size-large-desktop))), calc(var(--font-size-large-desktop) * 1px));
   --font-size-logo: clamp(calc(var(--font-size-logo-mobile) * 1px), calc(100vw / calc(var(--mobile-breakpoint) / var(--font-size-logo-desktop))), calc(var(--font-size-logo-desktop) * 1px));
   
+
+
   /* Line height */
   --line-height: 1.2;
   
