@@ -134,6 +134,10 @@ a {
   padding: var(--gutter);
 }
 
+.no-pad-top {
+  padding-top: 0px !important;
+}
+
 .logo {
   font-family: var(--logo-font-family);
   font-size: var(--font-size-logo);
@@ -194,7 +198,6 @@ a {
 }
 
 .footer {
-  padding: var(--gutter) 0;
   line-height: 1.2;
 }
 .footer-content {

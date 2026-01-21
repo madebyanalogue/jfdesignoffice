@@ -85,13 +85,20 @@ const { data: page, pending, error } = useAsyncData(
           _key,
           title,
           text,
+          largeText,
           links[] {
             linkTitle,
             subtitle,
             link,
             openInNewTab
           },
-          content
+          content,
+          image {
+            asset->
+          },
+          spanTwoColumns,
+          showOnDesktop,
+          showOnMobile
         },
         servicesTitle,
         servicesClassName,
@@ -154,7 +161,7 @@ const sections = computed(() => page.value?.sections || [])
   padding: var(--gutter) 0;
 }
 
-.page-section {
+.page-section:not(:last-child) {
   margin-bottom: var(--gutter);
 }
 </style>

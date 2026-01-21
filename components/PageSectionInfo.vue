@@ -13,15 +13,42 @@
         v-for="(block, index) in section.infoContent"
         :key="block._key || index"
         class="info-block"
+        :class="[
+          block._type === 'infoImageBlock' && block.showOnDesktop === false ? 'info-block-hide-desktop' : '',
+          block._type === 'infoImageBlock' && block.showOnMobile === false ? 'info-block-hide-mobile' : '',
+        ]"
       >
+        <!-- Image Block -->
+        <div
+          v-if="block._type === 'infoImageBlock' && block.image?.asset"
+          class="info-image-block"
+          :class="[
+           block._type === 'infoImageBlock' && block.spanTwoColumns ? 'info-image-block-span-2' : '',
+          ]"
+        >
+          <NuxtImg
+            :src="block.image.asset.url || ''"
+            alt=""
+            class="info-image-inline"
+          />
+        </div>
+        
         <!-- Text Block -->
-        <div v-if="block._type === 'infoTextBlock'" class="info-text-block">
+        <div
+          v-else-if="block._type === 'infoTextBlock'"
+          class="info-text-block"
+          :class="{ 'info-text-block-large': block.largeText }"
+        >
           <h2 v-if="block.title" class="info-block-title">{{ block.title }}</h2>
           <SanityBlocks v-if="block.text" :blocks="block.text" />
         </div>
         
         <!-- Links Block -->
-        <div v-else-if="block._type === 'infoLinksBlock'" class="info-links-block">
+        <div
+          v-else-if="block._type === 'infoLinksBlock'"
+          class="info-links-block"
+          :class="{ 'info-links-block-large': block.largeText }"
+        >
           <h2 v-if="block.title" class="info-block-title">{{ block.title }}</h2>
           <SanityBlocks v-if="block.text" :blocks="block.text" />
           <div v-if="block.links && block.links.length > 0" class="info-links-list">
@@ -143,7 +170,6 @@ const shouldOpenInNewTab = (link, openInNewTab) => {
   }
 }
 .info-section-image {
-  margin-bottom: var(--gutter);
 }
 
 .info-image {
@@ -164,6 +190,12 @@ const shouldOpenInNewTab = (link, openInNewTab) => {
   display: flex;
   flex-direction: column;
   gap: calc(var(--gutter) * 3);
+}
+
+@media (max-width:999px) {
+  .info-section-image {
+    display: none;
+  }
 }
 
 .info-block, .info-text-block {
@@ -188,6 +220,38 @@ const shouldOpenInNewTab = (link, openInNewTab) => {
 
 .info-block-title {
   font-weight: normal;
+}
+
+.info-text-block-large :deep(p) {
+  font-size: var(--font-size-large);
+}
+
+.info-links-block-large :deep(p) {
+  font-size: var(--font-size-large);
+}
+
+.info-image-inline {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+@media all and (min-width:1000px) {
+  .info-image-block-span-2 {
+    grid-column: span 2;
+  }
+}
+
+@media (min-width:1000px) {
+  .info-block-hide-desktop {
+    display: none;
+  }
+}
+
+@media (max-width:999px) {
+  .info-block-hide-mobile {
+    display: none;
+  }
 }
 
 .info-link-item {
