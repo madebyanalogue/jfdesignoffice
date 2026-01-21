@@ -64,7 +64,7 @@
                 :rel="shouldOpenInNewTab(linkItem.link, linkItem.openInNewTab) ? 'noopener' : undefined"
                 class="info-link"
               >
-                <span class="info-link-title">{{ linkItem.linkTitle || linkItem.link }} <span class="info-link-arrow">↗</span></span>
+                <span class="info-link-title">{{ linkItem.linkTitle || linkItem.link }}&nbsp;<span class="info-link-arrow">&nbsp;&nbsp;&nbsp;<svg id="a" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18"><polygon points="16.5 0 7 0 7 1.5 15.44 1.5 .05 16.89 1.11 17.95 16.5 2.56 16.5 11 18 11 18 1.5 18 0 16.5 0"/></svg></span></span>
               </a>
             </div>
           </div>
@@ -277,8 +277,8 @@ const shouldOpenInNewTab = (link, openInNewTab) => {
   left: 0;
   width: 100%;
   height: 1px;
-  transform: scaleX(0);
   transform-origin: left;
+  transform: scaleX(0);
   transition: transform 0.3s ease;
   background: currentColor;
 }
@@ -303,17 +303,36 @@ const shouldOpenInNewTab = (link, openInNewTab) => {
   gap: calc(var(--gutter) * 1);
 }
 
+.info-link-arrow svg {
+ fill: currentColor;
+ position: absolute;
+ bottom: 0;
+ left: 0;
+ width: 100%;
+ height: 100%;
+ object-fit: contain;
+}
+.info-link-arrow > span {
+  position: relative;
+}
+
 .info-link-arrow:before {
   content: ' ';
 }
 .info-link-arrow {
-  transform: scale(0);
   transform-origin: bottom left;
   transition: transform 0.3s ease;
   display: inline-block;
+  transform: scale(1);
 }
 .info-link:hover .info-link-arrow {
   transform: scale(1);
+}
+
+@media all and (min-width:1000px) {
+  .info-link-arrow {
+    transform: scale(0);
+}
 }
 
 .info-services-block {

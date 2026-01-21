@@ -234,3 +234,9 @@ a {
   transform: translateY(-3px);
 }
 
+.footer-back-to-top svg {
+  fill: currentColor;
+  width: 18px;
+  height: 18px;
+  transform: rotate(-45deg);
+}
