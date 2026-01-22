@@ -26,6 +26,7 @@ export const useSiteSettings = () => {
     },
     preloaderText,
     preloaderSvgCode,
+    preloaderFontSizeMobile,
     preloaderFontSize,
     facebookShareImage {
       asset->
@@ -93,6 +94,7 @@ export const useSiteSettings = () => {
   const preloaderImages = computed(() => settings.value?.preloaderImages || [])
   const preloaderText = computed(() => settings.value?.preloaderText || [])
   const preloaderSvgCode = computed(() => settings.value?.preloaderSvgCode || null)
+  const preloaderFontSizeMobile = computed(() => settings.value?.preloaderFontSizeMobile ?? 20)
   const preloaderFontSize = computed(() => settings.value?.preloaderFontSize ?? 40)
   const facebookShareImage = computed(() => {
     const image = settings.value?.facebookShareImage?.asset
@@ -147,6 +149,7 @@ export const useSiteSettings = () => {
     preloaderImages,
     preloaderText,
     preloaderSvgCode,
+    preloaderFontSizeMobile,
     preloaderFontSize,
   }
 }

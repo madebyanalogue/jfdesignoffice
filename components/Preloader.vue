@@ -41,7 +41,7 @@
 
       <div 
         class="preloader-text-container"
-        :style="{ fontSize: `${preloaderFontSize}px` }"
+        :style="preloaderFontSizeStyle"
       >
         <!-- SVG code if provided -->
         <div 
@@ -85,7 +85,7 @@ const props = defineProps({
 const emit = defineEmits(['preloader-complete', 'preloader-ready'])
 
 const { getImageSrc } = useSanityImage()
-const { settings: siteSettings, disablePreloader, preloaderImages, preloaderText, preloaderSvgCode, preloaderFontSize, title: websiteTitle } = useSiteSettings()
+const { settings: siteSettings, disablePreloader, preloaderImages, preloaderText, preloaderSvgCode, preloaderFontSizeMobile, preloaderFontSize, mobileBreakpoint, title: websiteTitle } = useSiteSettings()
 const { backgroundColor, textColor } = usePageSettings()
 
 // Helper to get image URL from Sanity image object
@@ -115,6 +115,18 @@ const animationInitialized = ref(false)
 const bgPanel1 = ref(null)
 const bgPanel2 = ref(null)
 const bgPanel3 = ref(null)
+
+// Computed style for responsive font size
+const preloaderFontSizeStyle = computed(() => {
+  const mobileSize = preloaderFontSizeMobile.value
+  const desktopSize = preloaderFontSize.value
+  const breakpoint = mobileBreakpoint.value
+  
+  // Use clamp() for responsive font sizing (matching the pattern used in main.css)
+  return {
+    fontSize: `clamp(${mobileSize}px, calc(100vw / ${breakpoint} * ${desktopSize}), ${desktopSize}px)`
+  }
+})
 
 // Support two data shapes: [{ image, alt }] or directly [image]
 const currentImageSource = computed(() => {
