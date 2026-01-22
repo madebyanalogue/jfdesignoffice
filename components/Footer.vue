@@ -1,7 +1,7 @@
 <template>
   <footer class="footer">
     <div class="pad-1 border-bottom">
-      <button class="footer-back-to-top" @click="scrollToTop"><span><svg id="a" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18"><polygon points="16.5 0 7 0 7 1.5 15.44 1.5 .05 16.89 1.11 17.95 16.5 2.56 16.5 11 18 11 18 1.5 18 0 16.5 0"/></svg></span></button>
+      <button class="footer-back-to-top" @click="scrollToTop"><span><div class="arrow-up"></div></span></button>
     </div>
     <div class="pad-1 footer-content">
       <div class="footer-links" v-if="footerLinks && footerLinks.length > 0">

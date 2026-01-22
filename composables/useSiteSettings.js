@@ -2,6 +2,7 @@ export const useSiteSettings = () => {
   const query = `*[_type == "siteSettings"][0] {
     maxWidth,
     logo,
+    title,
     seoTitle,
     seoDescription,
     headerType,
@@ -15,6 +16,17 @@ export const useSiteSettings = () => {
     fontSizeLargeDesktop,
     fontSizeLogoDesktop,
     lineHeight,
+    disablePreloader,
+    preloaderImages[] {
+      image {
+        asset->
+      },
+      alt,
+      repeatLeftRight
+    },
+    preloaderText,
+    preloaderSvgCode,
+    preloaderFontSize,
     facebookShareImage {
       asset->
     },
@@ -74,8 +86,14 @@ export const useSiteSettings = () => {
 
   const maxWidth = computed(() => settings.value?.maxWidth || '1800px')
   const logo = computed(() => settings.value?.logo || [])
+  const title = computed(() => settings.value?.title || 'JF Design Office')
   const seoTitle = computed(() => settings.value?.seoTitle || 'JF Design Office')
   const seoDescription = computed(() => settings.value?.seoDescription || '')
+  const disablePreloader = computed(() => settings.value?.disablePreloader === true)
+  const preloaderImages = computed(() => settings.value?.preloaderImages || [])
+  const preloaderText = computed(() => settings.value?.preloaderText || [])
+  const preloaderSvgCode = computed(() => settings.value?.preloaderSvgCode || null)
+  const preloaderFontSize = computed(() => settings.value?.preloaderFontSize ?? 40)
   const facebookShareImage = computed(() => {
     const image = settings.value?.facebookShareImage?.asset
     if (!image?._ref) return null
@@ -103,8 +121,10 @@ export const useSiteSettings = () => {
   })
 
   return {
+    settings,
     maxWidth,
     logo,
+    title,
     seoTitle,
     seoDescription,
     facebookShareImage,
@@ -123,6 +143,11 @@ export const useSiteSettings = () => {
     fontSizeLogoDesktop,
     lineHeight,
     copyright,
+    disablePreloader,
+    preloaderImages,
+    preloaderText,
+    preloaderSvgCode,
+    preloaderFontSize,
   }
 }
 

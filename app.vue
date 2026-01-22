@@ -1,5 +1,12 @@
 <template>
-  <div id="app" :style="appStyles">
+  <ClientOnly>
+    <Preloader 
+      @preloader-complete="onPreloaderComplete" 
+      @preloader-ready="onPreloaderReady" 
+    />
+  </ClientOnly>
+  
+  <div v-if="preloaderReady || disablePreloader" id="app" :style="appStyles">
     <Header />
     <NuxtPage />
     <Footer />
@@ -7,6 +14,7 @@
 </template>
 
 <script setup>
+import Preloader from '~/components/Preloader.vue'
 import { useSiteSettings } from '~/composables/useSiteSettings'
 import { usePageSettings } from '~/composables/usePageSettings'
 
@@ -26,8 +34,39 @@ const {
   fontSizeLogoDesktop,
   lineHeight,
   headerType,
+  disablePreloader,
 } = useSiteSettings()
 const { textColor, backgroundColor } = usePageSettings()
+
+// Preloader state - hide content until preloader is ready
+const preloaderReady = ref(false)
+
+// Preloader handlers
+const onPreloaderReady = () => {
+  // Preloader is ready to start, show content
+  preloaderReady.value = true
+  if (process.client) {
+    document.body.classList.add('preloader-ready')
+  }
+}
+
+const onPreloaderComplete = () => {
+  // Preloader animation finished, site is ready
+  if (process.client) {
+    document.body.classList.add('preloader-complete')
+  }
+}
+
+// If preloader is disabled, show content immediately
+watch(disablePreloader, (disabled) => {
+  if (disabled) {
+    preloaderReady.value = true
+    if (process.client) {
+      document.body.classList.add('preloader-ready')
+      document.body.classList.add('preloader-complete')
+    }
+  }
+}, { immediate: true })
 
 // Inject initial colours, header height, and typography variables into SSR so first paint uses custom values
 useHead(() => ({
@@ -291,6 +330,18 @@ useHead({
 </script>
 
 <style>
+/* Hide content until preloader is ready */
+body:not(.preloader-ready) #app {
+  visibility: hidden;
+  opacity: 0;
+}
+
+body.preloader-ready #app {
+  visibility: visible;
+  opacity: 1;
+  transition: opacity 0.2s ease-in;
+}
+
 /* Page transitions */
 .page-enter-active,
 .page-leave-active {

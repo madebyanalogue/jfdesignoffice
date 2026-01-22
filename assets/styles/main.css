@@ -23,6 +23,22 @@
   font-display: block;
 }
 
+/* Hide body content until preloader is ready */
+body:not(.preloader-ready) {
+  overflow: hidden;
+}
+
+body:not(.preloader-ready) #app {
+  visibility: hidden;
+  opacity: 0;
+}
+
+body.preloader-ready #app {
+  visibility: visible;
+  opacity: 1;
+  transition: opacity 0.2s ease-in;
+}
+
 :root {
 
   --mobile-breakpoint: 800;
@@ -240,3 +256,63 @@ a {
   height: 18px;
   transform: rotate(-45deg);
 }
+
+
+.arrow-up {
+  width: 12px;
+  height: 25px;
+  position: relative;
+  display: block;
+}
+.arrow-up:before {
+  content: '';
+    position: absolute;
+    top: 1px;
+    left: 1px;
+    width: 8px;
+    height: auto;
+    display: block;
+    aspect-ratio: 1 / 1;
+    border-top: 1px solid currentColor;
+    border-right: 1px solid currentColor;
+    transform: rotate(-45deg) translate(0px);
+    transform-origin: center;
+}
+.arrow-up:after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 5px;
+  height: 100%;
+  display: block;
+  border-right: 1px solid currentColor;
+}
+/* 
+.info-link-arrow {
+  position: relative;
+  width: 15px;
+  height: 21px;
+  margin-left: 8px;
+}
+.info-link-arrow:before {
+  content: '';
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  width: 7px;
+  height: 7px;
+  border-top: 1px solid currentColor;
+  border-right: 1px solid currentColor;
+}
+.info-link-arrow:after {
+  content: '';
+  position: absolute;
+  bottom: 1px;
+  left: -0.5px;
+  width: 9.5px;
+  height: 21px;
+  background: transparent;
+  border-right: 1px solid currentColor;
+  transform: rotate(45deg);
+} */

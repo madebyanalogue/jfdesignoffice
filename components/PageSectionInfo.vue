@@ -297,6 +297,14 @@ const shouldOpenInNewTab = (link, openInNewTab) => {
   gap: var(--gutter);
 }
 
+@media all and (min-width:1000px) {
+  .info-links-block,
+  .info-text-block {
+    grid-column: span 2;
+    max-width: 560px;
+  }
+}
+
 .info-links-list {
   display: flex;
   flex-direction: column;
