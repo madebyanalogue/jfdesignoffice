@@ -46,7 +46,7 @@ body.preloader-ready #app {
   /* Gutter */
   --gutter-mobile: 15;
   --gutter-desktop: 20;
-  --gutter: clamp(calc(var(--gutter-mobile) * 1px), calc(100vw / calc(var(--mobile-breakpoint) / var(--gutter-desktop))), calc(var(--gutter-desktop) * 1px));
+  --gutter: clamp(calc(var(--gutter-mobile) * 1px), calc((100vw * var(--gutter-desktop)) / var(--mobile-breakpoint)), calc(var(--gutter-desktop) * 1px));
   
   /* Font sizes */
   --font-size-body-mobile: 12;
@@ -57,9 +57,9 @@ body.preloader-ready #app {
   --font-size-large-desktop: 22;
   --font-size-logo-desktop: 40;
 
-  --font-size-body: clamp(calc(var(--font-size-body-mobile) * 1px), calc(100vw / calc(var(--mobile-breakpoint) / var(--font-size-body-desktop))), calc(var(--font-size-body-desktop) * 1px));
-  --font-size-large: clamp(calc(var(--font-size-large-mobile) * 1px), calc(100vw / calc(var(--mobile-breakpoint) / var(--font-size-large-desktop))), calc(var(--font-size-large-desktop) * 1px));
-  --font-size-logo: clamp(calc(var(--font-size-logo-mobile) * 1px), calc(100vw / calc(var(--mobile-breakpoint) / var(--font-size-logo-desktop))), calc(var(--font-size-logo-desktop) * 1px));
+  --font-size-body: clamp(calc(var(--font-size-body-mobile) * 1px), calc((100vw * var(--font-size-body-desktop)) / var(--mobile-breakpoint)), calc(var(--font-size-body-desktop) * 1px));
+  --font-size-large: clamp(calc(var(--font-size-large-mobile) * 1px), calc((100vw * var(--font-size-large-desktop)) / var(--mobile-breakpoint)), calc(var(--font-size-large-desktop) * 1px));
+  --font-size-logo: clamp(calc(var(--font-size-logo-mobile) * 1px), calc((100vw * var(--font-size-logo-desktop)) / var(--mobile-breakpoint)), calc(var(--font-size-logo-desktop) * 1px));
   
 
 
