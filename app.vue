@@ -47,6 +47,10 @@ const onPreloaderReady = () => {
   preloaderReady.value = true
   if (process.client) {
     document.body.classList.add('preloader-ready')
+    // Update header height once header is rendered
+    nextTick(() => {
+      updateHeaderHeight()
+    })
   }
 }
 
@@ -54,6 +58,10 @@ const onPreloaderComplete = () => {
   // Preloader animation finished, site is ready
   if (process.client) {
     document.body.classList.add('preloader-complete')
+    // Ensure header height is updated after preloader completes
+    nextTick(() => {
+      updateHeaderHeight()
+    })
   }
 }
 
@@ -110,6 +118,9 @@ const appStyles = computed(() => {
 const isInitialLoad = ref(true)
 const route = useRoute()
 let previousPath = route.path
+
+// Store ResizeObserver for cleanup
+let headerResizeObserver = null
 
 // Apply color transitions on navigation (but not on initial load)
 const updateColors = (withTransition = true) => {
@@ -168,8 +179,10 @@ const updateHeaderHeight = () => {
       // Set on html element for global access
       // Always calculate, but CSS class controls whether it's used
       document.documentElement.style.setProperty('--header-height', `${height}px`)
+      return true // Return true if header was found and height was set
     }
   }
+  return false // Return false if header not found
 }
 
 // Set initial colors instantly when component mounts
@@ -184,10 +197,6 @@ onMounted(async () => {
       currentBgColor !== (backgroundColor.value || '#ffffff')) {
     updateColors(false)
   }
-  
-  // Set initial header height (use nextTick to ensure header is rendered)
-  await nextTick()
-  updateHeaderHeight()
   
   // Update typography variables
   updateTypography()
@@ -205,14 +214,22 @@ onMounted(async () => {
   }
   updateHeaderTypeClass()
   
-  // Update header height on resize using ResizeObserver for efficiency
-  const resizeObserver = new ResizeObserver(() => {
-    updateHeaderHeight()
-  })
-  
-  const header = document.querySelector('.header')
-  if (header) {
-    resizeObserver.observe(header)
+  // Set up header height observer - wait for header to be rendered
+  const setupHeaderHeightObserver = () => {
+    const header = document.querySelector('.header')
+    if (header) {
+      // Set initial header height
+      updateHeaderHeight()
+      
+      // Update header height on resize using ResizeObserver for efficiency
+      headerResizeObserver = new ResizeObserver(() => {
+        updateHeaderHeight()
+      })
+      headerResizeObserver.observe(header)
+      
+      return true
+    }
+    return false
   }
   
   // Also listen to window resize as fallback
@@ -221,9 +238,30 @@ onMounted(async () => {
   }
   window.addEventListener('resize', handleResize, { passive: true })
   
+  // Try to set up observer immediately, or wait for preloader if needed
+  if (preloaderReady.value || disablePreloader.value) {
+    // Header should be rendered, set up observer
+    await nextTick()
+    setupHeaderHeightObserver()
+  } else {
+    // If header wasn't found, watch for preloaderReady and set up observer then
+    const unwatch = watch(preloaderReady, (ready) => {
+      if (ready) {
+        nextTick(() => {
+          if (setupHeaderHeightObserver()) {
+            unwatch() // Stop watching once observer is set up
+          }
+        })
+      }
+    }, { immediate: true })
+  }
+  
   // Cleanup
   onUnmounted(() => {
-    resizeObserver.disconnect()
+    if (headerResizeObserver) {
+      headerResizeObserver.disconnect()
+      headerResizeObserver = null
+    }
     window.removeEventListener('resize', handleResize)
   })
   
