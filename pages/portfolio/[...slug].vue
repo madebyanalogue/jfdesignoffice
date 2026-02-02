@@ -46,19 +46,70 @@
           <SanityBlocks :blocks="block.text" />
         </div>
         
+        <div v-else-if="block._type === 'galleryBlock' && block.images && block.images.length > 0" class="portfolio-gallery-block">
+          <PortfolioGallery
+            :images="block.images"
+            :timing="block.timing || 1000"
+            :alt="project.title"
+          />
+        </div>
+        
         <div v-else-if="block._type === 'twoColumnBlock'" class="portfolio-two-column-block">
           <div class="portfolio-two-column-image">
+            <PortfolioGallery
+              v-if="block.column1Type === 'gallery' && block.column1Images && block.column1Images.length > 0"
+              :images="block.column1Images"
+              :timing="block.column1Timing || 1000"
+              :alt="project.title"
+            />
             <NuxtImg
-              v-if="block.image1?.asset"
+              v-else-if="block.image1?.asset"
               :src="block.image1.asset.url || ''"
               :alt="project.title"
               class="portfolio-image"
             />
           </div>
           <div class="portfolio-two-column-image">
+            <PortfolioGallery
+              v-if="block.column2Type === 'gallery' && block.column2Images && block.column2Images.length > 0"
+              :images="block.column2Images"
+              :timing="block.column2Timing || 1000"
+              :alt="project.title"
+            />
             <NuxtImg
-              v-if="block.image2?.asset"
+              v-else-if="block.image2?.asset"
               :src="block.image2.asset.url || ''"
+              :alt="project.title"
+              class="portfolio-image"
+            />
+          </div>
+        </div>
+        
+        <div v-else-if="block._type === 'twoColumnGalleryBlock'" class="portfolio-two-column-gallery-block">
+          <div class="portfolio-two-column-gallery-column">
+            <PortfolioGallery
+              v-if="block.leftImages && block.leftImages.length > 1"
+              :images="block.leftImages"
+              :timing="block.leftTiming || 1000"
+              :alt="project.title"
+            />
+            <NuxtImg
+              v-else-if="block.leftImages && block.leftImages.length === 1 && block.leftImages[0]?.asset"
+              :src="block.leftImages[0].asset.url || ''"
+              :alt="project.title"
+              class="portfolio-image"
+            />
+          </div>
+          <div class="portfolio-two-column-gallery-column">
+            <PortfolioGallery
+              v-if="block.rightImages && block.rightImages.length > 1"
+              :images="block.rightImages"
+              :timing="block.rightTiming || 1000"
+              :alt="project.title"
+            />
+            <NuxtImg
+              v-else-if="block.rightImages && block.rightImages.length === 1 && block.rightImages[0]?.asset"
+              :src="block.rightImages[0].asset.url || ''"
               :alt="project.title"
               class="portfolio-image"
             />
@@ -108,7 +159,29 @@ const { data: project } = useAsyncData(
         },
         image2 {
           asset->
-        }
+        },
+        column1Type,
+        column1Images[] {
+          asset->
+        },
+        column1Timing,
+        column2Type,
+        column2Images[] {
+          asset->
+        },
+        column2Timing,
+        timing,
+        images[] {
+          asset->
+        },
+        leftImages[] {
+          asset->
+        },
+        leftTiming,
+        rightImages[] {
+          asset->
+        },
+        rightTiming
       }
     }`
     
@@ -176,10 +249,19 @@ const { data: project } = useAsyncData(
   display: block;
 }
 
-.portfolio-two-column-block {
+.portfolio-gallery-block {
+  width: 100%;
+}
+
+.portfolio-two-column-block,
+.portfolio-two-column-gallery-block {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: var(--gutter);
+}
+
+.portfolio-two-column-gallery-column {
+  width: 100%;
 }
 
 @media (max-width: 800px) {
@@ -187,7 +269,8 @@ const { data: project } = useAsyncData(
     grid-template-columns: 1fr;
   }
   
-  .portfolio-two-column-block {
+  .portfolio-two-column-block,
+  .portfolio-two-column-gallery-block {
     grid-template-columns: 1fr;
   }
 }
