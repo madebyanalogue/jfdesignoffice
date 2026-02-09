@@ -150,4 +150,3 @@ const { data: projects } = useAsyncData('portfolio', async () => {
   }
 }
 </style>
-

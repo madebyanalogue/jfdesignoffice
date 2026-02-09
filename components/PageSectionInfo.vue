@@ -1,11 +1,19 @@
 <template>
   <div class="info-section">
     <div v-if="section.infoImage?.asset" class="info-section-image">
-      <NuxtImg
-        :src="section.infoImage.asset.url || ''"
-        alt=""
-        class="info-image"
-      />
+      <div 
+        class="info-image-container"
+        :style="getImageAspectRatio(section.infoImage.asset)"
+      >
+        <NuxtImg
+          :src="section.infoImage.asset.url || ''"
+          :width="section.infoImage.asset.metadata?.dimensions?.width"
+          :height="section.infoImage.asset.metadata?.dimensions?.height"
+          alt=""
+          class="info-image"
+          @load="onImageLoad"
+        />
+      </div>
     </div>
     
     <div class="info-section-content">
@@ -98,13 +106,47 @@
 </template>
 
 <script setup>
-import { onMounted, watch, nextTick } from 'vue'
+import { onMounted, watch, nextTick, ref } from 'vue'
 
 defineProps({
   section: {
     type: Object,
     required: true,
   },
+})
+
+// Calculate aspect ratio for image asset
+const getImageAspectRatio = (asset) => {
+  if (asset?.metadata?.dimensions) {
+    const { width, height, aspectRatio } = asset.metadata.dimensions
+    if (aspectRatio) {
+      return { aspectRatio: `${aspectRatio}` }
+    } else if (width && height) {
+      return { aspectRatio: `${width / height}` }
+    }
+  }
+  // Fallback to a reasonable aspect ratio (4:3)
+  return { aspectRatio: '4 / 3' }
+}
+
+// Handle image load to fade in
+const infoImageRef = ref(null)
+const onImageLoad = (event) => {
+  if (process.client && event?.target) {
+    event.target.classList.add('loaded')
+  }
+}
+
+// Check if image is already loaded (cached)
+onMounted(() => {
+  if (process.client) {
+    nextTick(() => {
+      const img = document.querySelector('.info-image')
+      if (img && img.complete && img.naturalHeight > 0) {
+        img.classList.add('loaded')
+      }
+    })
+  }
 })
 
 // Get route at top level (required for Nuxt composables)
@@ -225,20 +267,38 @@ const shouldOpenInNewTab = (link, openInNewTab) => {
   }
 }
 .info-section-image {
+  position: relative;
 }
 
-.info-image {
+.info-image-container {
   width: 100%;
-  height: auto;
-  display: block;
+  position: relative;
+  overflow: hidden;
+  background-color: var(--background-color, #ffffff);
   position: sticky;
   /* Default: account for header height */
   top: calc(var(--header-height) + var(--gutter));
 }
 
 /* When header is static, don't account for header height */
-:global(.header-static) .info-image {
+:global(.header-static) .info-image-container {
   top: var(--gutter);
+}
+
+.info-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  opacity: 0;
+  transition: opacity 0.4s ease-in;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.info-image.loaded {
+  opacity: 1;
 }
 
 .info-section-content {

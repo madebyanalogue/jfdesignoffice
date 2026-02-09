@@ -86,6 +86,17 @@ watch(() => props.timing, () => {
   position: relative;
   width: 100%;
   overflow: hidden;
+  opacity: 0;
+  animation: fadeIn 0.6s ease-in forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .portfolio-gallery-image {

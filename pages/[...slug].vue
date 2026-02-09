@@ -1,9 +1,6 @@
 <template>
   <div class="page">
-    <div v-if="pending">
-      <p>Loading...</p>
-    </div>
-    <div v-else-if="error">
+    <div v-if="error">
       <p>Error loading page: {{ error.message }}</p>
     </div>
     <div v-else-if="page">
@@ -80,7 +77,17 @@ const { data: page, pending, error } = useAsyncData(
           format
         },
         infoImage {
-          asset->
+          asset-> {
+            _id,
+            url,
+            metadata {
+              dimensions {
+                width,
+                height,
+                aspectRatio
+              }
+            }
+          }
         },
         infoContent[] {
           _type,

@@ -36,6 +36,17 @@ export default defineNuxtConfig({
     },
     quality: 80,
     format: ['webp', 'jpg'],
+    // Enable image caching
+    domains: ['cdn.sanity.io'],
+    // Add cache headers for images
+    screens: {
+      xs: 320,
+      sm: 640,
+      md: 768,
+      lg: 1024,
+      xl: 1280,
+      xxl: 1536,
+    },
   },
   css: ['~/assets/styles/main.css'],
   experimental: {

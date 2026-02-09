@@ -1,21 +1,31 @@
 <template>
   <div class="portfolio-detail">
     <div v-if="pending" class="portfolio-loading">
-      <p>Loading...</p>
+     
     </div>
-    <div v-else-if="error" class="portfolio-error">
+    <div v-if="error" class="portfolio-error">
       <p>Error loading portfolio: {{ error.message }}</p>
     </div>
     <div v-else-if="project">
       <div v-if="project.heroImage?.asset" class="portfolio-hero">
-        <NuxtImg
-          :src="project.heroImage.asset.url || ''"
-          :alt="project.title"
-          class="portfolio-hero-image"
-        />
+        <div 
+          ref="heroImageContainerRef"
+          class="portfolio-hero-image-container"
+          :style="heroImageAspectRatio"
+        >
+          <NuxtImg
+            :src="project.heroImage.asset.url || ''"
+            :alt="project.title"
+            :width="project.heroImage.asset.metadata?.dimensions?.width"
+            :height="project.heroImage.asset.metadata?.dimensions?.height"
+            class="portfolio-hero-image"
+            loading="eager"
+            @load="onHeroImageLoad"
+          />
+        </div>
       </div>
       
-      <div class="portfolio-info underline-links">
+      <div class="portfolio-info underline-links portfolio-fade-in">
         <div class="portfolio-info-column">
           <h1 class="portfolio-title">{{ project.title }}</h1>
         </div>
@@ -31,22 +41,34 @@
         <div
           v-for="(block, index) in project.contentBlocks"
           :key="block._key || index"
-          class="portfolio-content-block"
+          class="portfolio-content-block portfolio-fade-in"
+          :style="{ transitionDelay: `${(index + 1) * 0.1}s` }"
         >
         <div v-if="block._type === 'imageBlock' && block.image?.asset" class="portfolio-image-block">
-          <NuxtImg
-            :src="block.image.asset.url || ''"
-            :alt="project.title"
-            class="portfolio-image"
-          />
+          <div 
+            class="portfolio-image-container"
+            :style="getImageAspectRatio(block.image.asset)"
+          >
+            <NuxtImg
+              :src="block.image.asset.url || ''"
+              :alt="project.title"
+              :width="block.image.asset.metadata?.dimensions?.width"
+              :height="block.image.asset.metadata?.dimensions?.height"
+              class="portfolio-image"
+              @load="onImageLoad"
+            />
+          </div>
         </div>
         
         <div v-else-if="block._type === 'videoBlock' && block.video" class="portfolio-video-block">
-          <video
-            :src="block.video.asset.url"
-            controls
-            class="portfolio-video"
-          />
+          <div class="portfolio-image-container" style="aspect-ratio: 16 / 9;">
+            <video
+              :src="block.video.asset.url"
+              controls
+              class="portfolio-video"
+              @loadeddata="onVideoLoad"
+            />
+          </div>
         </div>
         
         <div v-else-if="block._type === 'textBlock' && block.text" class="portfolio-text-block underline-links">
@@ -69,12 +91,20 @@
               :timing="block.column1Timing || 1000"
               :alt="project.title"
             />
-            <NuxtImg
+            <div 
               v-else-if="block.image1?.asset"
-              :src="block.image1.asset.url || ''"
-              :alt="project.title"
-              class="portfolio-image"
-            />
+              class="portfolio-image-container"
+              :style="getImageAspectRatio(block.image1.asset)"
+            >
+              <NuxtImg
+                :src="block.image1.asset.url || ''"
+                :alt="project.title"
+                :width="block.image1.asset.metadata?.dimensions?.width"
+                :height="block.image1.asset.metadata?.dimensions?.height"
+                class="portfolio-image"
+                @load="onImageLoad"
+              />
+            </div>
           </div>
           <div class="portfolio-two-column-image">
             <PortfolioGallery
@@ -83,12 +113,20 @@
               :timing="block.column2Timing || 1000"
               :alt="project.title"
             />
-            <NuxtImg
+            <div 
               v-else-if="block.image2?.asset"
-              :src="block.image2.asset.url || ''"
-              :alt="project.title"
-              class="portfolio-image"
-            />
+              class="portfolio-image-container"
+              :style="getImageAspectRatio(block.image2.asset)"
+            >
+              <NuxtImg
+                :src="block.image2.asset.url || ''"
+                :alt="project.title"
+                :width="block.image2.asset.metadata?.dimensions?.width"
+                :height="block.image2.asset.metadata?.dimensions?.height"
+                class="portfolio-image"
+                @load="onImageLoad"
+              />
+            </div>
           </div>
         </div>
         
@@ -100,12 +138,20 @@
               :timing="block.leftTiming || 1000"
               :alt="project.title"
             />
-            <NuxtImg
+            <div 
               v-else-if="block.leftImages && block.leftImages.length === 1 && block.leftImages[0]?.asset"
-              :src="block.leftImages[0].asset.url || ''"
-              :alt="project.title"
-              class="portfolio-image"
-            />
+              class="portfolio-image-container"
+              :style="getImageAspectRatio(block.leftImages[0].asset)"
+            >
+              <NuxtImg
+                :src="block.leftImages[0].asset.url || ''"
+                :alt="project.title"
+                :width="block.leftImages[0].asset.metadata?.dimensions?.width"
+                :height="block.leftImages[0].asset.metadata?.dimensions?.height"
+                class="portfolio-image"
+                @load="onImageLoad"
+              />
+            </div>
           </div>
           <div class="portfolio-two-column-gallery-column">
             <PortfolioGallery
@@ -114,12 +160,20 @@
               :timing="block.rightTiming || 1000"
               :alt="project.title"
             />
-            <NuxtImg
+            <div 
               v-else-if="block.rightImages && block.rightImages.length === 1 && block.rightImages[0]?.asset"
-              :src="block.rightImages[0].asset.url || ''"
-              :alt="project.title"
-              class="portfolio-image"
-            />
+              class="portfolio-image-container"
+              :style="getImageAspectRatio(block.rightImages[0].asset)"
+            >
+              <NuxtImg
+                :src="block.rightImages[0].asset.url || ''"
+                :alt="project.title"
+                :width="block.rightImages[0].asset.metadata?.dimensions?.width"
+                :height="block.rightImages[0].asset.metadata?.dimensions?.height"
+                class="portfolio-image"
+                @load="onImageLoad"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -154,7 +208,17 @@ const { data: project, pending, error } = useAsyncData(
       title,
       slug,
       heroImage {
-        asset->
+        asset-> {
+          _id,
+          url,
+          metadata {
+            dimensions {
+              width,
+              height,
+              aspectRatio
+            }
+          }
+        }
       },
       column1,
       column2,
@@ -162,17 +226,47 @@ const { data: project, pending, error } = useAsyncData(
         _type,
         _key,
         image {
-          asset->
+          asset-> {
+            _id,
+            url,
+            metadata {
+              dimensions {
+                width,
+                height,
+                aspectRatio
+              }
+            }
+          }
         },
         video {
           asset->
         },
         text,
         image1 {
-          asset->
+          asset-> {
+            _id,
+            url,
+            metadata {
+              dimensions {
+                width,
+                height,
+                aspectRatio
+              }
+            }
+          }
         },
         image2 {
-          asset->
+          asset-> {
+            _id,
+            url,
+            metadata {
+              dimensions {
+                width,
+                height,
+                aspectRatio
+              }
+            }
+          }
         },
         column1Type,
         column1Images[] {
@@ -189,11 +283,31 @@ const { data: project, pending, error } = useAsyncData(
           asset->
         },
         leftImages[] {
-          asset->
+          asset-> {
+            _id,
+            url,
+            metadata {
+              dimensions {
+                width,
+                height,
+                aspectRatio
+              }
+            }
+          }
         },
         leftTiming,
         rightImages[] {
-          asset->
+          asset-> {
+            _id,
+            url,
+            metadata {
+              dimensions {
+                width,
+                height,
+                aspectRatio
+              }
+            }
+          }
         },
         rightTiming
       }
@@ -222,6 +336,95 @@ const { data: project, pending, error } = useAsyncData(
 watch(pending, (isPending) => {
   setLoading(isPending)
 }, { immediate: true })
+
+// Calculate aspect ratio for hero image to prevent layout shift
+const heroImageAspectRatio = computed(() => {
+  if (project.value?.heroImage?.asset?.metadata?.dimensions) {
+    const { width, height, aspectRatio } = project.value.heroImage.asset.metadata.dimensions
+    if (aspectRatio) {
+      return { aspectRatio: `${aspectRatio}` }
+    } else if (width && height) {
+      return { aspectRatio: `${width / height}` }
+    }
+  }
+  // Fallback to a reasonable aspect ratio (16:9)
+  return { aspectRatio: '16 / 9' }
+})
+
+// Calculate aspect ratio for any image asset
+const getImageAspectRatio = (asset) => {
+  if (asset?.metadata?.dimensions) {
+    const { width, height, aspectRatio } = asset.metadata.dimensions
+    if (aspectRatio) {
+      return { aspectRatio: `${aspectRatio}` }
+    } else if (width && height) {
+      return { aspectRatio: `${width / height}` }
+    }
+  }
+  // Fallback to a reasonable aspect ratio (4:3)
+  return { aspectRatio: '4 / 3' }
+}
+
+// Handle image load to fade in
+const heroImageContainerRef = ref(null)
+const onHeroImageLoad = () => {
+  if (process.client && heroImageContainerRef.value) {
+    // Find the img element within the container
+    const img = heroImageContainerRef.value.querySelector('img')
+    if (img) {
+      img.classList.add('loaded')
+    }
+  }
+}
+
+// Handle regular image loads
+const onImageLoad = (event) => {
+  if (process.client && event?.target) {
+    event.target.classList.add('loaded')
+  }
+}
+
+// Handle video loads
+const onVideoLoad = (event) => {
+  if (process.client && event?.target) {
+    event.target.classList.add('loaded')
+  }
+}
+
+// Check if image is already loaded (for cached images)
+watch(() => project.value?.heroImage?.asset, () => {
+  if (process.client && project.value?.heroImage?.asset && heroImageContainerRef.value) {
+    nextTick(() => {
+      const img = heroImageContainerRef.value.querySelector('img')
+      if (img && img.complete && img.naturalHeight > 0) {
+        img.classList.add('loaded')
+      }
+    })
+  }
+}, { immediate: true })
+
+// Check all images on mount for cached images
+onMounted(() => {
+  if (process.client) {
+    nextTick(() => {
+      // Check all portfolio images
+      const images = document.querySelectorAll('.portfolio-image')
+      images.forEach((img) => {
+        if (img.complete && img.naturalHeight > 0) {
+          img.classList.add('loaded')
+        }
+      })
+      
+      // Check all portfolio videos
+      const videos = document.querySelectorAll('.portfolio-video')
+      videos.forEach((video) => {
+        if (video.readyState >= 2) {
+          video.classList.add('loaded')
+        }
+      })
+    })
+  }
+})
 </script>
 
 <style scoped>
@@ -234,10 +437,25 @@ watch(pending, (isPending) => {
   padding: 0px var(--gutter);
 }
 
+.portfolio-hero-image-container {
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  background-color: var(--background-color, #ffffff);
+}
+
 .portfolio-hero-image {
   width: 100%;
-  height: auto;
+  height: 100%;
+  object-fit: cover;
   display: block;
+  opacity: 0;
+  transition: opacity 0.3s ease-in;
+}
+
+.portfolio-hero-image[data-loaded="true"],
+.portfolio-hero-image.loaded {
+  opacity: 1;
 }
 
 .portfolio-info {
@@ -247,7 +465,20 @@ watch(pending, (isPending) => {
   padding: 0px var(--gutter);
   margin-bottom: var(--gutter);
   padding-bottom: calc(var(--gutter) * 3);
+}
 
+.portfolio-fade-in {
+  opacity: 0;
+  animation: fadeIn 0.6s ease-in forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .portfolio-content {
@@ -261,11 +492,29 @@ watch(pending, (isPending) => {
   padding-bottom: calc(var(--gutter) * 4);
 }
 
+.portfolio-image-container {
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  background-color: var(--background-color, #ffffff);
+}
+
 .portfolio-image,
 .portfolio-video {
   width: 100%;
-  height: auto;
+  height: 100%;
+  object-fit: cover;
   display: block;
+  opacity: 0;
+  transition: opacity 0.4s ease-in;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.portfolio-image.loaded,
+.portfolio-video.loaded {
+  opacity: 1;
 }
 
 .portfolio-gallery-block {
