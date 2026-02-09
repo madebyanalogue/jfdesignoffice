@@ -27,8 +27,12 @@
 </template>
 
 <script setup>
+import { watch } from 'vue'
+import { injectPageLoading } from '~/composables/usePageLoading'
 
-const { data: projects } = useAsyncData('portfolio', async () => {
+const { setLoading } = injectPageLoading()
+
+const { data: projects, pending } = useAsyncData('portfolio', async () => {
   const query = `*[_type == "portfolio"] | order(orderRank) {
     _id,
     title,
@@ -54,7 +58,12 @@ const { data: projects } = useAsyncData('portfolio', async () => {
     method: 'POST',
     body: { query },
   }).then(result => result?.result || []).catch(() => [])
-})
+}, { watch: [] })
+
+// Update global loading state
+watch(pending, (isPending) => {
+  setLoading(isPending)
+}, { immediate: true })
 </script>
 
 <style scoped>

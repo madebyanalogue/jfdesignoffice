@@ -149,58 +149,8 @@ onMounted(() => {
   }
 })
 
-// Get route at top level (required for Nuxt composables)
-const route = useRoute()
-
-// Ensure header height is updated when component mounts (especially on client-side navigation)
-const updateHeaderHeight = () => {
-  if (process.client) {
-    const header = document.querySelector('.header')
-    if (header) {
-      const height = header.offsetHeight
-      document.documentElement.style.setProperty('--header-height', `${height}px`)
-      return true
-    }
-  }
-  return false
-}
-
-onMounted(() => {
-  if (process.client) {
-    // Wait for next tick to ensure DOM is ready
-    nextTick(() => {
-      updateHeaderHeight()
-      
-      // Also set up multiple delays to catch any late header rendering
-      // This is especially important during navigation
-      setTimeout(() => {
-        updateHeaderHeight()
-      }, 100)
-      
-      setTimeout(() => {
-        updateHeaderHeight()
-      }, 300)
-      
-      setTimeout(() => {
-        updateHeaderHeight()
-      }, 700) // After page transition completes
-    })
-    
-    // Watch for route changes to recalculate
-    watch(() => route.path, () => {
-      // Wait for page transition to complete before updating
-      setTimeout(() => {
-        nextTick(() => {
-          updateHeaderHeight()
-          // Retry after a delay to ensure header is fully rendered
-          setTimeout(() => {
-            updateHeaderHeight()
-          }, 100)
-        })
-      }, 600) // Match page transition duration
-    })
-  }
-})
+// Header height is now managed centrally in app.vue and only updates on window resize
+// No need to update it here - it's stored in sessionStorage and persists across navigations
 
 const { data: pressAwards } = useAsyncData('press-awards', async () => {
   const query = `*[_type == "pressAward"] | order(orderRank) {

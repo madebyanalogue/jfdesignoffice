@@ -11,9 +11,7 @@
     <main class="page-wrapper">
       <NuxtPage />
     </main>
-    <Transition name="fade">
-      <Footer v-if="!isPageLoading" />
-    </Transition>
+    <Footer :class="{ 'footer-fade-out': isNavigating }" />
   </div>
 </template>
 
@@ -54,7 +52,16 @@ const preloaderReady = ref(false)
 const { isLoading: isPageLoading } = providePageLoading()
 
 // Store header height to prevent useHead from resetting it
+// Initialize from sessionStorage if available, otherwise default to 0px
 const currentHeaderHeight = ref('0px')
+
+// Initialize from sessionStorage on client side
+if (process.client) {
+  const stored = sessionStorage.getItem('header-height')
+  if (stored) {
+    currentHeaderHeight.value = stored
+  }
+}
 
 // Preloader handlers
 const onPreloaderReady = () => {
@@ -204,18 +211,22 @@ const updateTypography = () => {
   }
 }
 
-// Update header height CSS variable (responsive)
+// Update header height CSS variable (only on window resize or initial load)
 const updateHeaderHeight = () => {
   if (process.client) {
     const header = document.querySelector('.header')
     if (header) {
       const height = header.offsetHeight
       const heightValue = `${height}px`
-      // Update the ref so useHead uses the correct value
-      currentHeaderHeight.value = heightValue
-      // Set on html element for global access
-      // Always calculate, but CSS class controls whether it's used
-      document.documentElement.style.setProperty('--header-height', heightValue)
+      // Only update if height actually changed
+      if (currentHeaderHeight.value !== heightValue) {
+        // Update the ref so useHead uses the correct value
+        currentHeaderHeight.value = heightValue
+        // Store in sessionStorage for persistence across navigations
+        sessionStorage.setItem('header-height', heightValue)
+        // Set on html element for global access
+        document.documentElement.style.setProperty('--header-height', heightValue)
+      }
       return true // Return true if header was found and height was set
     }
   }
@@ -255,14 +266,27 @@ onMounted(async () => {
   }
   updateHeaderTypeClass()
   
-  // Set up header height observer - wait for header to be rendered
-  const setupHeaderHeightObserver = () => {
+  // Set up header height - only update on window resize
+  const setupHeaderHeight = () => {
     const header = document.querySelector('.header')
     if (header) {
-      // Set initial header height
-      updateHeaderHeight()
+      // Set initial header height from stored value or calculate if not stored
+      const storedHeight = sessionStorage.getItem('header-height')
+      if (storedHeight) {
+        currentHeaderHeight.value = storedHeight
+        document.documentElement.style.setProperty('--header-height', storedHeight)
+      } else {
+        // Only calculate on initial load if not stored
+        updateHeaderHeight()
+      }
       
-      // Update header height on resize using ResizeObserver for efficiency
+      // Update header height on window resize only
+      const handleResize = () => {
+        updateHeaderHeight()
+      }
+      window.addEventListener('resize', handleResize, { passive: true })
+      
+      // Also use ResizeObserver on header for more precise resize detection
       headerResizeObserver = new ResizeObserver(() => {
         updateHeaderHeight()
       })
@@ -273,24 +297,18 @@ onMounted(async () => {
     return false
   }
   
-  // Also listen to window resize as fallback
-  const handleResize = () => {
-    updateHeaderHeight()
-  }
-  window.addEventListener('resize', handleResize, { passive: true })
-  
-  // Try to set up observer immediately, or wait for preloader if needed
+  // Try to set up header height management immediately, or wait for preloader if needed
   if (preloaderReady.value || disablePreloader.value) {
-    // Header should be rendered, set up observer
+    // Header should be rendered, set up
     await nextTick()
-    setupHeaderHeightObserver()
+    setupHeaderHeight()
   } else {
-    // If header wasn't found, watch for preloaderReady and set up observer then
+    // If header wasn't found, watch for preloaderReady and set up then
     const unwatch = watch(preloaderReady, (ready) => {
       if (ready) {
         nextTick(() => {
-          if (setupHeaderHeightObserver()) {
-            unwatch() // Stop watching once observer is set up
+          if (setupHeaderHeight()) {
+            unwatch() // Stop watching once set up
           }
         })
       }
@@ -303,7 +321,6 @@ onMounted(async () => {
       headerResizeObserver.disconnect()
       headerResizeObserver = null
     }
-    window.removeEventListener('resize', handleResize)
   })
   
   isInitialLoad.value = false
@@ -352,24 +369,8 @@ watch(() => route.path, (newPath) => {
       }, 600) // Match page transition duration - update colors right after fade-out
     }
     
-    // Update header height after page transition completes and new page is rendered
-    // Wait for the page transition to finish, then ensure header is measured
-    // Use multiple attempts to ensure it's set correctly
-    setTimeout(() => {
-      nextTick(() => {
-        updateHeaderHeight()
-        // Retry multiple times to catch any late rendering
-        setTimeout(() => {
-          updateHeaderHeight()
-        }, 50)
-        setTimeout(() => {
-          updateHeaderHeight()
-        }, 150)
-        setTimeout(() => {
-          updateHeaderHeight()
-        }, 300)
-      })
-    }, 600) // Match page transition duration
+    // Header height is now only updated on window resize, not on navigation
+    // The stored value from sessionStorage is used, preventing page jumps
   }
   previousPath = newPath
 })
@@ -552,6 +553,12 @@ body.preloader-ready #app {
   opacity: 0;
 }
 
+/* Footer fades with page transition */
+.footer-fade-out {
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+
 /* Footer fade-in transition */
 .fade-enter-active {
   transition: opacity 0.6s ease;
@@ -559,6 +566,13 @@ body.preloader-ready #app {
 
 .fade-enter-from {
   opacity: 0;
+}
+
+/* Footer hidden state - use opacity to prevent layout shifts */
+.footer-hidden {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
 }
 </style>
 
