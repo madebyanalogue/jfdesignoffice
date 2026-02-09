@@ -29,7 +29,11 @@ export const useSiteSettings = () => {
     preloaderFontSizeMobile,
     preloaderFontSize,
       facebookShareImage {
-        asset->
+        asset-> {
+          _id,
+          url,
+          _ref
+        }
       },
       leftMenu-> {
         title,
@@ -97,10 +101,30 @@ export const useSiteSettings = () => {
   const preloaderFontSizeMobile = computed(() => settings.value?.preloaderFontSizeMobile ?? 20)
   const preloaderFontSize = computed(() => settings.value?.preloaderFontSize ?? 40)
   const facebookShareImage = computed(() => {
-    const image = settings.value?.facebookShareImage?.asset
-    if (!image?._ref) return null
-    const [file, id, extension] = image._ref.replace('image-', '').split('-')
-    return `https://cdn.sanity.io/images/kpljrloc/production/${id}.${extension}`
+    const asset = settings.value?.facebookShareImage?.asset
+    if (!asset) return null
+    
+    // If we have a direct URL, use it
+    if (asset.url) {
+      return asset.url
+    }
+    
+    // Fallback: construct URL from _id or _ref
+    if (asset._id) {
+      // Extract parts from "image-abc123-1920x1080-jpg"
+      const match = String(asset._id).match(/image-([^-]+)-(\d+)x(\d+)-(\w+)/)
+      if (match) {
+        const [, assetId, width, height, ext] = match
+        return `https://cdn.sanity.io/images/kpljrloc/production/${assetId}-${width}x${height}.${ext}`
+      }
+    }
+    
+    if (asset._ref) {
+      const [file, id, extension] = asset._ref.replace('image-', '').split('-')
+      return `https://cdn.sanity.io/images/kpljrloc/production/${id}.${extension}`
+    }
+    
+    return null
   })
   const leftMenu = computed(() => settings.value?.leftMenu)
   const rightMenu = computed(() => settings.value?.rightMenu)

@@ -431,48 +431,95 @@ watch(headerType, () => {
   }
 }, { immediate: false })
 
-useHead({
-  title: seoTitle.value || 'JF Design Office',
-  meta: [
-    {
+useHead(() => {
+  const meta = []
+  const siteTitle = seoTitle.value || 'JF Design Office'
+  const siteUrl = process.client ? window.location.origin : 'https://www.jfdesignoffice.com'
+  const currentUrl = process.client ? window.location.href : siteUrl
+  
+  // Meta description
+  if (seoDescription.value) {
+    meta.push({
       name: 'description',
-      content: seoDescription.value || '',
-    },
-    // Open Graph / Facebook
+      content: seoDescription.value,
+    })
+  }
+  
+  // Open Graph / Facebook
+  meta.push(
     {
       property: 'og:title',
-      content: seoTitle.value || 'JF Design Office',
-    },
-    {
-      property: 'og:description',
-      content: seoDescription.value || '',
-    },
-    {
-      property: 'og:image',
-      content: facebookShareImage.value || '',
+      content: siteTitle,
     },
     {
       property: 'og:type',
       content: 'website',
     },
-    // Twitter Card
+    {
+      property: 'og:site_name',
+      content: siteTitle,
+    },
+    {
+      property: 'og:url',
+      content: currentUrl,
+    }
+  )
+  
+  if (seoDescription.value) {
+    meta.push({
+      property: 'og:description',
+      content: seoDescription.value,
+    })
+  }
+  
+  // OG Image with dimensions
+  if (facebookShareImage.value) {
+    meta.push(
+      {
+        property: 'og:image',
+        content: facebookShareImage.value,
+      },
+      {
+        property: 'og:image:width',
+        content: '1200',
+      },
+      {
+        property: 'og:image:height',
+        content: '630',
+      }
+    )
+  }
+  
+  // Twitter Card
+  meta.push(
     {
       name: 'twitter:card',
       content: 'summary_large_image',
     },
     {
       name: 'twitter:title',
-      content: seoTitle.value || 'JF Design Office',
-    },
-    {
+      content: siteTitle,
+    }
+  )
+  
+  if (seoDescription.value) {
+    meta.push({
       name: 'twitter:description',
-      content: seoDescription.value || '',
-    },
-    {
+      content: seoDescription.value,
+    })
+  }
+  
+  if (facebookShareImage.value) {
+    meta.push({
       name: 'twitter:image',
-      content: facebookShareImage.value || '',
-    },
-  ],
+      content: facebookShareImage.value,
+    })
+  }
+  
+  return {
+    title: siteTitle,
+    meta,
+  }
 })
 </script>
 
