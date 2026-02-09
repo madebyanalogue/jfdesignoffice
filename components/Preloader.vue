@@ -193,7 +193,7 @@ const initPreloaderAnimation = () => {
     const holdTime = textStart + 0.8 // Hold for 0.8 seconds after text appears
     const exitTime = 0.9 // Exit animation duration
     
-    // Animate preloader container up and out
+    // Animate preloader container and background panels together at the same time
     animationTimeline.to('.preloader-container', {
       y: '-100%',
       duration: exitTime,
@@ -208,13 +208,13 @@ const initPreloaderAnimation = () => {
       }
     }, holdTime)
     
-    // Animate background panels with slight delay
+    // Animate background panels at the same time as preloader container
     animationTimeline.to([bgPanel1.value, bgPanel2.value, bgPanel3.value], {
       y: '-100%',
       duration: exitTime,
       ease: "power2.inOut",
       stagger: 0.05 // Very slight stagger between panels
-    }, holdTime + 0.1) // Start 0.1s after preloader starts
+    }, holdTime) // Start at the same time as preloader container
   } else {
     // No preloader images - just show text
     // Hide image sequence immediately
@@ -234,26 +234,26 @@ const initPreloaderAnimation = () => {
     
      // Animate preloader container up and out
      animationTimeline.to('.preloader-container', {
-       y: '-100%',
-       duration: exitTime,
-       ease: "power2.inOut",
-       onComplete: () => {
-         // Hide preloader but keep in DOM
-         showPreloader.value = false
-         // Emit preloader complete event for section triggers
-         document.dispatchEvent(new CustomEvent('preloader-complete'))
-         // Add class to body so plugins can detect completion
-         document.body.classList.add('preloader-complete')
-       }
+      y: '-100%',
+      duration: exitTime,
+      ease: "power2.inOut",
+      onComplete: () => {
+        // Hide preloader but keep in DOM
+        showPreloader.value = false
+        // Emit preloader complete event for section triggers
+        document.dispatchEvent(new CustomEvent('preloader-complete'))
+        // Add class to body so plugins can detect completion
+        document.body.classList.add('preloader-complete')
+      }
      }, holdTime)
     
-    // Animate background panels with slight delay
+    // Animate background panels at the same time as preloader container
     animationTimeline.to([bgPanel1.value, bgPanel2.value, bgPanel3.value], {
       y: '-100%',
       duration: exitTime,
       ease: "power2.inOut",
       stagger: 0.05 // Very slight stagger between panels
-    }, holdTime + 0.1) // Start 0.1s after preloader starts
+    }, holdTime) // Start at the same time as preloader container
   }
 }
 

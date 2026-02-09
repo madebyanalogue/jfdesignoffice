@@ -98,11 +98,50 @@
 </template>
 
 <script setup>
+import { onMounted, watch, nextTick } from 'vue'
+
 defineProps({
   section: {
     type: Object,
     required: true,
   },
+})
+
+// Get route at top level (required for Nuxt composables)
+const route = useRoute()
+
+// Ensure header height is updated when component mounts (especially on client-side navigation)
+const updateHeaderHeight = () => {
+  if (process.client) {
+    const header = document.querySelector('.header')
+    if (header) {
+      const height = header.offsetHeight
+      document.documentElement.style.setProperty('--header-height', `${height}px`)
+      return true
+    }
+  }
+  return false
+}
+
+onMounted(() => {
+  if (process.client) {
+    // Wait for next tick to ensure DOM is ready
+    nextTick(() => {
+      updateHeaderHeight()
+      
+      // Also set up a small delay to catch any late header rendering
+      setTimeout(() => {
+        updateHeaderHeight()
+      }, 100)
+    })
+    
+    // Watch for route changes to recalculate
+    watch(() => route.path, () => {
+      nextTick(() => {
+        updateHeaderHeight()
+      })
+    })
+  }
 })
 
 const { data: pressAwards } = useAsyncData('press-awards', async () => {

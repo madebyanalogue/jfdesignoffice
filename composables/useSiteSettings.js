@@ -1,10 +1,10 @@
 export const useSiteSettings = () => {
-  const query = `*[_type == "siteSettings"][0] {
-    maxWidth,
-    logo,
+    const query = `*[_type == "siteSettings"][0] {
+      maxWidth,
+      logo,
     title,
-    seoTitle,
-    seoDescription,
+      seoTitle,
+      seoDescription,
     headerType,
     mobileBreakpoint,
     gutterMobile,
@@ -28,45 +28,45 @@ export const useSiteSettings = () => {
     preloaderSvgCode,
     preloaderFontSizeMobile,
     preloaderFontSize,
-    facebookShareImage {
-      asset->
-    },
-    leftMenu-> {
-      title,
-      items[] {
-        text,
+      facebookShareImage {
+        asset->
+      },
+      leftMenu-> {
+        title,
+        items[] {
+          text,
         textMobile,
-        link {
-          type,
-          page-> {
-            slug {
-              current
-            }
-          },
-          url
+          link {
+            type,
+            page-> {
+              slug {
+                current
+              }
+            },
+            url
+          }
         }
-      }
-    },
-    rightMenu-> {
-      title,
-      items[] {
-        text,
+      },
+      rightMenu-> {
+        title,
+        items[] {
+          text,
         textMobile,
-        link {
-          type,
-          page-> {
-            slug {
-              current
-            }
-          },
-          url
+          link {
+            type,
+            page-> {
+              slug {
+                current
+              }
+            },
+            url
+          }
         }
-      }
-    },
-    footerLinks,
-    copyright
-  }`
-  
+      },
+      footerLinks,
+      copyright
+    }`
+    
   const { data: settings } = useAsyncData('siteSettings', async () => {
     if (process.server) {
       const config = useRuntimeConfig()

@@ -38,6 +38,10 @@ const {
 } = useSiteSettings()
 const { textColor, backgroundColor } = usePageSettings()
 
+// Store displayed colors separately to control when they update during navigation
+const displayedTextColor = ref(textColor.value || '#000000')
+const displayedBackgroundColor = ref(backgroundColor.value || '#ffffff')
+
 // Preloader state - hide content until preloader is ready
 const preloaderReady = ref(false)
 
@@ -77,12 +81,13 @@ watch(disablePreloader, (disabled) => {
 }, { immediate: true })
 
 // Inject initial colours, header height, and typography variables into SSR so first paint uses custom values
+// Use displayed colors instead of direct page settings to control update timing
 useHead(() => ({
   htmlAttrs: {
     class: headerType.value === 'static' ? 'header-static' : '',
     style: `
-      --text-color: ${textColor.value || '#000000'}; 
-      --background-color: ${backgroundColor.value || '#ffffff'}; 
+      --text-color: ${displayedTextColor.value}; 
+      --background-color: ${displayedBackgroundColor.value}; 
       --header-height: 0px;
       --mobile-breakpoint: ${mobileBreakpoint.value};
       --gutter-mobile: ${gutterMobile.value};
@@ -116,6 +121,8 @@ const appStyles = computed(() => {
 
 // Track if this is the initial page load
 const isInitialLoad = ref(true)
+// Track if we're currently navigating to prevent color watcher from interfering
+const isNavigating = ref(false)
 const route = useRoute()
 let previousPath = route.path
 
@@ -125,6 +132,10 @@ let headerResizeObserver = null
 // Apply color transitions on navigation (but not on initial load)
 const updateColors = (withTransition = true) => {
   if (process.client) {
+    // Update displayed colors (which useHead will pick up)
+    displayedTextColor.value = textColor.value || '#000000'
+    displayedBackgroundColor.value = backgroundColor.value || '#ffffff'
+    
     const html = document.documentElement
     const body = document.body
     const app = document.getElementById('app')
@@ -136,8 +147,19 @@ const updateColors = (withTransition = true) => {
       if (app) app.style.setProperty('transition', 'none', 'important')
     }
     
-    html.style.setProperty('--text-color', textColor.value || '#000000')
-    html.style.setProperty('--background-color', backgroundColor.value || '#ffffff')
+    // Update both CSS variables synchronously to ensure transitions start at the same time
+    const updateBoth = () => {
+      html.style.setProperty('--text-color', displayedTextColor.value)
+      html.style.setProperty('--background-color', displayedBackgroundColor.value)
+    }
+    
+    if (withTransition) {
+      // For transitions, update immediately in the same frame
+      updateBoth()
+    } else {
+      // For instant updates, update immediately
+      updateBoth()
+    }
     
     // Re-enable transitions after colors are set if we disabled them
     if (!withTransition) {
@@ -187,14 +209,18 @@ const updateHeaderHeight = () => {
 
 // Set initial colors instantly when component mounts
 onMounted(async () => {
+  // Initialize displayed colors with current page settings
+  displayedTextColor.value = textColor.value || '#000000'
+  displayedBackgroundColor.value = backgroundColor.value || '#ffffff'
+  
   // Only update if colors differ from what's already set via useHead
   const html = document.documentElement
   const currentTextColor = getComputedStyle(html).getPropertyValue('--text-color').trim()
   const currentBgColor = getComputedStyle(html).getPropertyValue('--background-color').trim()
   
   // Only update if colors have changed (avoid unnecessary style changes)
-  if (currentTextColor !== (textColor.value || '#000000') || 
-      currentBgColor !== (backgroundColor.value || '#ffffff')) {
+  if (currentTextColor !== displayedTextColor.value || 
+      currentBgColor !== displayedBackgroundColor.value) {
     updateColors(false)
   }
   
@@ -272,8 +298,45 @@ onMounted(async () => {
 // Watch for route changes to detect navigation (not initial load)
 watch(() => route.path, (newPath) => {
   if (!isInitialLoad.value && newPath !== previousPath) {
-    // On navigation, allow transitions
-    updateColors(true)
+    // Mark that we're navigating to prevent color watcher from interfering
+    isNavigating.value = true
+    
+    // Disable color transitions during page fade-out
+    const html = document.documentElement
+    const body = document.body
+    const app = document.getElementById('app')
+    
+    if (html && body && app) {
+      // Disable transitions immediately to prevent any color changes during fade-out
+      html.style.setProperty('transition', 'none', 'important')
+      if (body) body.style.setProperty('transition', 'none', 'important')
+      if (app) app.style.setProperty('transition', 'none', 'important')
+      
+      // Wait for page fade-out to complete (0.6s), then update displayed colors
+      setTimeout(() => {
+        // Update displayed colors AFTER fade-out completes
+        // This ensures colors change when content is invisible
+        displayedTextColor.value = textColor.value || '#000000'
+        displayedBackgroundColor.value = backgroundColor.value || '#ffffff'
+        
+        // Also update CSS variables directly (transitions still disabled for instant change)
+        html.style.setProperty('--text-color', displayedTextColor.value)
+        html.style.setProperty('--background-color', displayedBackgroundColor.value)
+        
+        // Keep transitions disabled for a bit longer to ensure instant color change
+        // Then re-enable transitions for future changes
+        setTimeout(() => {
+          requestAnimationFrame(() => {
+            html.style.removeProperty('transition')
+            if (body) body.style.removeProperty('transition')
+            if (app) app.style.removeProperty('transition')
+            // Navigation complete, allow color watcher to work again
+            isNavigating.value = false
+          })
+        }, 50) // Small delay to ensure color change is instant
+      }, 600) // Match page transition duration - update colors right after fade-out
+    }
+    
     // Update header height in case it changed
     updateHeaderHeight()
   }
@@ -281,10 +344,25 @@ watch(() => route.path, (newPath) => {
 })
 
 // Watch color values - only transition if not initial load and route changed
+// Note: Route change handler above manages color updates during navigation
 watch([textColor, backgroundColor], () => {
   if (process.client) {
+    // Don't update colors if we're in the middle of a navigation
+    if (isNavigating.value) {
+      return
+    }
+    
     if (!isInitialLoad.value) {
-      updateColors(true)
+      // Only update if route hasn't changed (handled by route watcher above)
+      // This prevents double updates during navigation
+      const currentPath = route.path
+      // Small delay to check if route is still the same
+      setTimeout(() => {
+        if (route.path === currentPath && !isNavigating.value) {
+          // Route didn't change, so this is a programmatic color change
+          updateColors(true)
+        }
+      }, 50)
     } else {
       // On initial load, set colors instantly
       updateColors(false)
