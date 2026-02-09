@@ -16,7 +16,7 @@
               <NuxtImg
                 v-if="item.project?.featuredImage?.asset"
                 :src="item.project.featuredImage.asset.url || ''"
-                :alt="item.project.title"
+                alt=""
                 class="featured-project-image"
               />
           </div>

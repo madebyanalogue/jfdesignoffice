@@ -8,8 +8,12 @@
   
   <div v-if="preloaderReady || disablePreloader" id="app" :style="appStyles">
     <Header />
-    <NuxtPage />
-    <Footer />
+    <div class="page-wrapper">
+      <NuxtPage />
+    </div>
+    <Transition name="fade">
+      <Footer v-if="!isPageLoading" />
+    </Transition>
   </div>
 </template>
 
@@ -17,6 +21,7 @@
 import Preloader from '~/components/Preloader.vue'
 import { useSiteSettings } from '~/composables/useSiteSettings'
 import { usePageSettings } from '~/composables/usePageSettings'
+import { providePageLoading } from '~/composables/usePageLoading'
 
 const { 
   maxWidth, 
@@ -44,6 +49,12 @@ const displayedBackgroundColor = ref(backgroundColor.value || '#ffffff')
 
 // Preloader state - hide content until preloader is ready
 const preloaderReady = ref(false)
+
+// Page loading state - track when pages are loading
+const { isLoading: isPageLoading } = providePageLoading()
+
+// Store header height to prevent useHead from resetting it
+const currentHeaderHeight = ref('0px')
 
 // Preloader handlers
 const onPreloaderReady = () => {
@@ -84,11 +95,12 @@ watch(disablePreloader, (disabled) => {
 // Use displayed colors instead of direct page settings to control update timing
 useHead(() => ({
   htmlAttrs: {
+    lang: 'en',
     class: headerType.value === 'static' ? 'header-static' : '',
     style: `
       --text-color: ${displayedTextColor.value}; 
       --background-color: ${displayedBackgroundColor.value}; 
-      --header-height: 0px;
+      --header-height: ${currentHeaderHeight.value};
       --mobile-breakpoint: ${mobileBreakpoint.value};
       --gutter-mobile: ${gutterMobile.value};
       --gutter-desktop: ${gutterDesktop.value};
@@ -198,9 +210,12 @@ const updateHeaderHeight = () => {
     const header = document.querySelector('.header')
     if (header) {
       const height = header.offsetHeight
+      const heightValue = `${height}px`
+      // Update the ref so useHead uses the correct value
+      currentHeaderHeight.value = heightValue
       // Set on html element for global access
       // Always calculate, but CSS class controls whether it's used
-      document.documentElement.style.setProperty('--header-height', `${height}px`)
+      document.documentElement.style.setProperty('--header-height', heightValue)
       return true // Return true if header was found and height was set
     }
   }
@@ -337,8 +352,24 @@ watch(() => route.path, (newPath) => {
       }, 600) // Match page transition duration - update colors right after fade-out
     }
     
-    // Update header height in case it changed
-    updateHeaderHeight()
+    // Update header height after page transition completes and new page is rendered
+    // Wait for the page transition to finish, then ensure header is measured
+    // Use multiple attempts to ensure it's set correctly
+    setTimeout(() => {
+      nextTick(() => {
+        updateHeaderHeight()
+        // Retry multiple times to catch any late rendering
+        setTimeout(() => {
+          updateHeaderHeight()
+        }, 50)
+        setTimeout(() => {
+          updateHeaderHeight()
+        }, 150)
+        setTimeout(() => {
+          updateHeaderHeight()
+        }, 300)
+      })
+    }, 600) // Match page transition duration
   }
   previousPath = newPath
 })
@@ -458,6 +489,11 @@ body.preloader-ready #app {
   transition: opacity 0.2s ease-in;
 }
 
+/* Page wrapper to ensure stable DOM structure during transitions */
+.page-wrapper {
+  min-height: 1px; /* Ensure wrapper has height */
+}
+
 /* Page transitions */
 .page-enter-active,
 .page-leave-active {
@@ -466,6 +502,15 @@ body.preloader-ready #app {
 
 .page-enter-from,
 .page-leave-to {
+  opacity: 0;
+}
+
+/* Footer fade-in transition */
+.fade-enter-active {
+  transition: opacity 0.6s ease;
+}
+
+.fade-enter-from {
   opacity: 0;
 }
 </style>

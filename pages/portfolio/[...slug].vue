@@ -1,31 +1,38 @@
 <template>
-  <div v-if="project" class="portfolio-detail">
-    <div v-if="project.heroImage?.asset" class="portfolio-hero">
-      <NuxtImg
-        :src="project.heroImage.asset.url || ''"
-        :alt="project.title"
-        class="portfolio-hero-image"
-      />
+  <div class="portfolio-detail">
+    <div v-if="pending" class="portfolio-loading">
+      <p>Loading...</p>
     </div>
-    
-    <div class="portfolio-info underline-links">
-      <div class="portfolio-info-column">
-        <h1 class="portfolio-title">{{ project.title }}</h1>
-      </div>
-      <div class="portfolio-info-column">
-        <SanityBlocks v-if="project.column1" :blocks="project.column1" />
-      </div>
-      <div class="portfolio-info-column">
-        <SanityBlocks v-if="project.column2" :blocks="project.column2" />
-      </div>
+    <div v-else-if="error" class="portfolio-error">
+      <p>Error loading portfolio: {{ error.message }}</p>
     </div>
-    
-    <div class="portfolio-content">
-      <div
-        v-for="(block, index) in project.contentBlocks"
-        :key="block._key || index"
-        class="portfolio-content-block"
-      >
+    <div v-else-if="project">
+      <div v-if="project.heroImage?.asset" class="portfolio-hero">
+        <NuxtImg
+          :src="project.heroImage.asset.url || ''"
+          :alt="project.title"
+          class="portfolio-hero-image"
+        />
+      </div>
+      
+      <div class="portfolio-info underline-links">
+        <div class="portfolio-info-column">
+          <h1 class="portfolio-title">{{ project.title }}</h1>
+        </div>
+        <div class="portfolio-info-column">
+          <SanityBlocks v-if="project.column1" :blocks="project.column1" />
+        </div>
+        <div class="portfolio-info-column">
+          <SanityBlocks v-if="project.column2" :blocks="project.column2" />
+        </div>
+      </div>
+      
+      <div class="portfolio-content">
+        <div
+          v-for="(block, index) in project.contentBlocks"
+          :key="block._key || index"
+          class="portfolio-content-block"
+        >
         <div v-if="block._type === 'imageBlock' && block.image?.asset" class="portfolio-image-block">
           <NuxtImg
             :src="block.image.asset.url || ''"
@@ -116,12 +123,19 @@
           </div>
         </div>
       </div>
+      </div>
+    </div>
+    <div v-else class="portfolio-not-found">
+      <p>Portfolio project not found</p>
     </div>
   </div>
 </template>
 
 <script setup>
+import { injectPageLoading } from '~/composables/usePageLoading'
+
 const route = useRoute()
+const { setLoading } = injectPageLoading()
 
 const slug = computed(() => {
   if (route.params.slug) {
@@ -130,7 +144,7 @@ const slug = computed(() => {
   return null
 })
 
-const { data: project } = useAsyncData(
+const { data: project, pending, error } = useAsyncData(
   () => `portfolio-${slug.value}`,
   async () => {
     if (!slug.value) return null
@@ -203,6 +217,11 @@ const { data: project } = useAsyncData(
   },
   { watch: [slug] }
 )
+
+// Update global loading state
+watch(pending, (isPending) => {
+  setLoading(isPending)
+}, { immediate: true })
 </script>
 
 <style scoped>

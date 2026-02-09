@@ -129,17 +129,33 @@ onMounted(() => {
     nextTick(() => {
       updateHeaderHeight()
       
-      // Also set up a small delay to catch any late header rendering
+      // Also set up multiple delays to catch any late header rendering
+      // This is especially important during navigation
       setTimeout(() => {
         updateHeaderHeight()
       }, 100)
+      
+      setTimeout(() => {
+        updateHeaderHeight()
+      }, 300)
+      
+      setTimeout(() => {
+        updateHeaderHeight()
+      }, 700) // After page transition completes
     })
     
     // Watch for route changes to recalculate
     watch(() => route.path, () => {
-      nextTick(() => {
-        updateHeaderHeight()
-      })
+      // Wait for page transition to complete before updating
+      setTimeout(() => {
+        nextTick(() => {
+          updateHeaderHeight()
+          // Retry after a delay to ensure header is fully rendered
+          setTimeout(() => {
+            updateHeaderHeight()
+          }, 100)
+        })
+      }, 600) // Match page transition duration
     })
   }
 })
