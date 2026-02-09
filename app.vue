@@ -8,9 +8,9 @@
   
   <div v-if="preloaderReady || disablePreloader" id="app" :style="appStyles">
     <Header />
-    <div class="page-wrapper">
+    <main class="page-wrapper">
       <NuxtPage />
-    </div>
+    </main>
     <Transition name="fade">
       <Footer v-if="!isPageLoading" />
     </Transition>
