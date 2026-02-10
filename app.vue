@@ -354,6 +354,12 @@ watch(() => route.path, (newPath) => {
         // Also update CSS variables directly (transitions still disabled for instant change)
         html.style.setProperty('--text-color', displayedTextColor.value)
         html.style.setProperty('--background-color', displayedBackgroundColor.value)
+
+        // After the old page has fully faded out, jump to the top of the new page
+        // Use an instant scroll (no smooth transition), as requested
+        if (process.client) {
+          window.scrollTo(0, 0)
+        }
         
         // Keep transitions disabled for a bit longer to ensure instant color change
         // Then re-enable transitions for future changes
