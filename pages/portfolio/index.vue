@@ -15,6 +15,9 @@
             <NuxtImg
               v-if="project.featuredImage?.asset"
               :src="project.featuredImage.asset.url || ''"
+              :width="Math.min(project.featuredImage.asset.metadata?.dimensions?.width || 1800, 1800)"
+              :height="project.featuredImage.asset.metadata?.dimensions?.height"
+              :sizes="'(max-width: 799px) 100vw, (max-width: 999px) 50vw, 33vw'"
               alt=""
               class="portfolio-item-image"
             />
@@ -38,7 +41,17 @@ const { data: projects, pending } = useAsyncData('portfolio', async () => {
     title,
     slug,
     featuredImage {
-      asset->
+      asset-> {
+        _id,
+        url,
+        metadata {
+          dimensions {
+            width,
+            height,
+            aspectRatio
+          }
+        }
+      }
     },
     archiveFormat
   }`
