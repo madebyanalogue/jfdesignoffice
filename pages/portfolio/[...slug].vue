@@ -18,6 +18,7 @@
             :alt="project.title"
             :width="project.heroImage.asset.metadata?.dimensions?.width"
             :height="project.heroImage.asset.metadata?.dimensions?.height"
+            sizes="100vw"
             class="portfolio-hero-image"
             loading="eager"
             @load="onHeroImageLoad"

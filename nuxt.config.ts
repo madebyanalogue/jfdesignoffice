@@ -39,13 +39,13 @@ export default defineNuxtConfig({
     // Enable image caching
     domains: ['cdn.sanity.io'],
     // Add cache headers for images
+    // Breakpoints used by Nuxt Image to generate widths.
+    // Increase the largest size so hero images on desktop can get a sharper,
+    // higher‑resolution source than 1536px.
     screens: {
-      xs: 320,
-      sm: 640,
-      md: 768,
-      lg: 1024,
-      xl: 1280,
-      xxl: 1536,
+      lg: 1200,
+      xl: 2560,
+      xxl: 3200,
     },
   },
   css: ['~/assets/styles/main.css'],
