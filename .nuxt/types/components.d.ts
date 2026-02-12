@@ -22,6 +22,8 @@ interface _GlobalComponents {
   'PageSectionPortfolio': typeof import("../../components/PageSectionPortfolio.vue").default
   'PageSectionPressAwards': typeof import("../../components/PageSectionPressAwards.vue").default
   'PageSectionServices': typeof import("../../components/PageSectionServices.vue").default
+  'PortfolioGallery': typeof import("../../components/PortfolioGallery.vue").default
+  'Preloader': typeof import("../../components/Preloader.vue").default
   'SanityBlock': typeof import("../../components/SanityBlock.vue").default
   'SanityBlocks': typeof import("../../components/SanityBlocks.vue").default
   'SanityContent': typeof import("../../node_modules/@nuxtjs/sanity/dist/runtime/components/sanity-content").default
@@ -58,6 +60,8 @@ interface _GlobalComponents {
   'LazyPageSectionPortfolio': LazyComponent<typeof import("../../components/PageSectionPortfolio.vue").default>
   'LazyPageSectionPressAwards': LazyComponent<typeof import("../../components/PageSectionPressAwards.vue").default>
   'LazyPageSectionServices': LazyComponent<typeof import("../../components/PageSectionServices.vue").default>
+  'LazyPortfolioGallery': LazyComponent<typeof import("../../components/PortfolioGallery.vue").default>
+  'LazyPreloader': LazyComponent<typeof import("../../components/Preloader.vue").default>
   'LazySanityBlock': LazyComponent<typeof import("../../components/SanityBlock.vue").default>
   'LazySanityBlocks': LazyComponent<typeof import("../../components/SanityBlocks.vue").default>
   'LazySanityContent': LazyComponent<typeof import("../../node_modules/@nuxtjs/sanity/dist/runtime/components/sanity-content").default>

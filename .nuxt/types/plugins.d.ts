@@ -23,6 +23,7 @@ type NuxtAppInjections =
   InjectionType<typeof import("../../node_modules/nuxt/dist/app/plugins/check-if-layout-used.js")> &
   InjectionType<typeof import("../../plugins/favicon.client.js")> &
   InjectionType<typeof import("../../plugins/google-analytics.client.js")> &
+  InjectionType<typeof import("../../plugins/preloader-gated-animations.client.js")> &
   InjectionType<typeof import("../../plugins/prevent-fouc.client.js")>
 
 declare module '#app' {

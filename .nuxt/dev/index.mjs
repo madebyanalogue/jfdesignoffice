@@ -1,5 +1,5 @@
 import process from 'node:process';globalThis._importMeta_={url:import.meta.url,env:process.env};import { tmpdir } from 'node:os';
-import { defineEventHandler, handleCacheHeaders, splitCookiesString, createEvent, fetchWithEvent, isEvent, eventHandler, setHeaders, sendRedirect, proxyRequest, getRequestHeader, setResponseHeaders, setResponseStatus, send, getRequestHeaders, setResponseHeader, appendResponseHeader, getRequestURL, getResponseHeader, removeResponseHeader, createError, getQuery as getQuery$1, readBody, getResponseStatus, lazyEventHandler, useBase, createApp, createRouter as createRouter$1, toNodeListener, getRouterParam, getResponseStatusText } from 'file:///Users/joshwatts/Downloads/_NUXT/jfdesignoffice/jfdesignoffice-nuxt/node_modules/h3/dist/index.mjs';
+import { defineEventHandler, handleCacheHeaders, splitCookiesString, createEvent, fetchWithEvent, isEvent, eventHandler, setHeaders, sendRedirect, proxyRequest, getRequestHeader, setResponseHeaders, setResponseStatus, send, getRequestHeaders, setResponseHeader, appendResponseHeader, getRequestURL, getResponseHeader, removeResponseHeader, createError, getQuery as getQuery$1, readBody, getResponseStatus, lazyEventHandler, useBase, createApp, createRouter as createRouter$1, toNodeListener, getRouterParam, sendError, setHeader, getResponseStatusText } from 'file:///Users/joshwatts/Downloads/_NUXT/jfdesignoffice/jfdesignoffice-nuxt/node_modules/h3/dist/index.mjs';
 import { Server } from 'node:http';
 import { resolve, dirname, join } from 'node:path';
 import nodeCrypto from 'node:crypto';
@@ -672,7 +672,9 @@ const _inlineRuntimeConfig = {
       ]
     },
     "http": {
-      "domains": []
+      "domains": [
+        "cdn.sanity.io"
+      ]
     }
   }
 };
@@ -1391,7 +1393,7 @@ const _wM7mqtXc_2U92qJ8GzWp3HoGv9xyXiLkZWRh1iBZek0 = (function(nitro) {
 
 const rootDir = "/Users/joshwatts/Downloads/_NUXT/jfdesignoffice/jfdesignoffice-nuxt";
 
-const appHead = {"meta":[{"charset":"utf-8"},{"name":"viewport","content":"width=device-width, initial-scale=1"}],"link":[{"rel":"preload","href":"/fonts/BagossStandardTRIAL-Regular.woff","as":"font","type":"font/woff","crossorigin":"anonymous"},{"rel":"preload","href":"/fonts/AyerRegular.woff","as":"font","type":"font/woff","crossorigin":"anonymous"},{"rel":"preload","href":"/fonts/AyerRegularItalic.woff","as":"font","type":"font/woff","crossorigin":"anonymous"}],"style":[{"children":"\n            html:not(.css-loaded) body { \n              visibility: hidden !important; \n              opacity: 0 !important;\n            } \n            html.css-loaded body { \n              visibility: visible !important; \n              opacity: 1 !important;\n              transition: opacity 0.2s ease-in;\n            }\n          ","key":"prevent-fouc"}],"script":[],"noscript":[],"title":"JF Design Office"};
+const appHead = {"meta":[{"charset":"utf-8"},{"name":"viewport","content":"width=device-width, initial-scale=1"}],"link":[{"rel":"preload","href":"/fonts/BagossStandardTRIAL-Regular.woff","as":"font","type":"font/woff","crossorigin":"anonymous"},{"rel":"preload","href":"/fonts/AyerRegular.woff","as":"font","type":"font/woff","crossorigin":"anonymous"},{"rel":"preload","href":"/fonts/AyerRegularItalic.woff","as":"font","type":"font/woff","crossorigin":"anonymous"}],"style":[{"children":"\n            html:not(.css-loaded) body { \n              visibility: hidden !important; \n              opacity: 0 !important;\n            } \n            html.css-loaded body { \n              visibility: visible !important; \n              opacity: 1 !important;\n              transition: opacity 0.2s ease-in;\n            }\n          ","key":"prevent-fouc"}],"script":[{"src":"https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js","defer":true}],"noscript":[],"title":"JF Design Office"};
 
 const appRootTag = "div";
 
@@ -1990,11 +1992,13 @@ const _sRZFj6 = lazyEventHandler(() => {
   return useBase(opts.baseURL, ipxHandler);
 });
 
+const _lazy_UeyLZb = () => Promise.resolve().then(function () { return proxySvg$1; });
 const _lazy_pNJe08 = () => Promise.resolve().then(function () { return query_post$1; });
 const _lazy_ndwr7P = () => Promise.resolve().then(function () { return renderer$1; });
 
 const handlers = [
   { route: '', handler: _FKL8_9, lazy: false, middleware: true, method: undefined },
+  { route: '/api/proxy-svg', handler: _lazy_UeyLZb, lazy: true, middleware: false, method: undefined },
   { route: '/api/sanity/query', handler: _lazy_pNJe08, lazy: true, middleware: false, method: "post" },
   { route: '/__nuxt_error', handler: _lazy_ndwr7P, lazy: true, middleware: false, method: undefined },
   { route: '/__nuxt_island/**', handler: _SxA8c9, lazy: false, middleware: false, method: undefined },
@@ -2252,6 +2256,38 @@ const styles = {};
 const styles$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
   default: styles
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const ALLOWED_HOSTS = /* @__PURE__ */ new Set([
+  "cdn.sanity.io"
+]);
+const proxySvg = defineEventHandler(async (event) => {
+  const { url } = getQuery$1(event);
+  if (!url) {
+    return sendError(event, createError({ statusCode: 400, statusMessage: "Missing url" }));
+  }
+  try {
+    const target = new URL(Array.isArray(url) ? url[0] : url);
+    if (!ALLOWED_HOSTS.has(target.hostname)) {
+      return sendError(event, createError({ statusCode: 400, statusMessage: "Host not allowed" }));
+    }
+    const res = await fetch(target.toString(), { method: "GET" });
+    if (!res.ok) {
+      return sendError(event, createError({ statusCode: res.status, statusMessage: `Upstream error ${res.status}` }));
+    }
+    const svg = await res.text();
+    setHeader(event, "Content-Type", "image/svg+xml; charset=utf-8");
+    setHeader(event, "Cache-Control", "public, max-age=300, s-maxage=600");
+    setHeader(event, "Access-Control-Allow-Origin", "*");
+    return svg;
+  } catch (error) {
+    return sendError(event, createError({ statusCode: 500, statusMessage: (error == null ? void 0 : error.message) || "Proxy failed" }));
+  }
+});
+
+const proxySvg$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: proxySvg
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const query_post = defineEventHandler(async (event) => {

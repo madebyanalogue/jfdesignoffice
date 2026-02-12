@@ -22,6 +22,8 @@ export const PageSectionInfo: typeof import("../components/PageSectionInfo.vue")
 export const PageSectionPortfolio: typeof import("../components/PageSectionPortfolio.vue").default
 export const PageSectionPressAwards: typeof import("../components/PageSectionPressAwards.vue").default
 export const PageSectionServices: typeof import("../components/PageSectionServices.vue").default
+export const PortfolioGallery: typeof import("../components/PortfolioGallery.vue").default
+export const Preloader: typeof import("../components/Preloader.vue").default
 export const SanityBlock: typeof import("../components/SanityBlock.vue").default
 export const SanityBlocks: typeof import("../components/SanityBlocks.vue").default
 export const SanityContent: typeof import("../node_modules/@nuxtjs/sanity/dist/runtime/components/sanity-content").default
@@ -58,6 +60,8 @@ export const LazyPageSectionInfo: LazyComponent<typeof import("../components/Pag
 export const LazyPageSectionPortfolio: LazyComponent<typeof import("../components/PageSectionPortfolio.vue").default>
 export const LazyPageSectionPressAwards: LazyComponent<typeof import("../components/PageSectionPressAwards.vue").default>
 export const LazyPageSectionServices: LazyComponent<typeof import("../components/PageSectionServices.vue").default>
+export const LazyPortfolioGallery: LazyComponent<typeof import("../components/PortfolioGallery.vue").default>
+export const LazyPreloader: LazyComponent<typeof import("../components/Preloader.vue").default>
 export const LazySanityBlock: LazyComponent<typeof import("../components/SanityBlock.vue").default>
 export const LazySanityBlocks: LazyComponent<typeof import("../components/SanityBlocks.vue").default>
 export const LazySanityContent: LazyComponent<typeof import("../node_modules/@nuxtjs/sanity/dist/runtime/components/sanity-content").default>

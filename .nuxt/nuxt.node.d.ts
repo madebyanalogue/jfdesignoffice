@@ -1,6 +1,6 @@
 /// <reference types="@nuxtjs/sanity" />
-/// <reference types="@nuxt/devtools" />
 /// <reference types="@nuxt/image" />
+/// <reference types="@nuxt/devtools" />
 /// <reference types="@nuxt/telemetry" />
 /// <reference path="types/modules.d.ts" />
 /// <reference path="types/runtime-config.d.ts" />
