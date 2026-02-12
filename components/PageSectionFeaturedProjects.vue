@@ -6,19 +6,19 @@
       class="featured-project"
       :class="`format-${item.format || 'landscape'}`"
     >
-        <NuxtLink
-          v-if="item.project?.slug?.current"
-          :to="`/portfolio/${item.project.slug.current}`"
-          class="featured-project-link"
-        >
+      <NuxtLink
+        v-if="item.project?.slug?.current"
+        :to="`/portfolio/${item.project.slug.current}`"
+        class="featured-project-link"
+      >
         <div class="featured-project-image-container">
           <div class="featured-project-image-wrapper">
-              <NuxtImg
+        <NuxtImg
                 v-if="item.project?.featuredImage?.asset"
                 :src="item.project.featuredImage.asset.url || ''"
                 alt=""
-                class="featured-project-image"
-              />
+          class="featured-project-image"
+        />
           </div>
         </div>
         <h3 class="featured-project-title"><span>{{ item.project.title }}</span></h3>

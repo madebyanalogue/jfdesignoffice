@@ -13,12 +13,9 @@
           class="portfolio-hero-image-container"
           :style="heroImageAspectRatio"
         >
-          <NuxtImg
-            :src="project.heroImage.asset.url || ''"
+          <img
+            :src="`${project.heroImage.asset.url}?w=1920&auto=format`"
             :alt="project.title"
-            :width="project.heroImage.asset.metadata?.dimensions?.width"
-            :height="project.heroImage.asset.metadata?.dimensions?.height"
-            sizes="100vw"
             class="portfolio-hero-image"
             loading="eager"
             @load="onHeroImageLoad"

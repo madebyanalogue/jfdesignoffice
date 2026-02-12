@@ -37,10 +37,10 @@ const isExternalUrl = (url) => {
 
 const scrollToTop = () => {
   if (process.client) {
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth',
-    })
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth',
+  })
   }
 }
 </script>

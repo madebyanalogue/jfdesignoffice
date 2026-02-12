@@ -121,7 +121,7 @@ export const useSiteSettings = () => {
     
     if (asset._ref) {
       const [file, id, extension] = asset._ref.replace('image-', '').split('-')
-      return `https://cdn.sanity.io/images/kpljrloc/production/${id}.${extension}`
+    return `https://cdn.sanity.io/images/kpljrloc/production/${id}.${extension}`
     }
     
     return null

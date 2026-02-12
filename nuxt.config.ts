@@ -43,9 +43,9 @@ export default defineNuxtConfig({
     // Increase the largest size so hero images on desktop can get a sharper,
     // higher‑resolution source than 1536px.
     screens: {
-      sm: 1200,
-      md: 2560,
-      lg: 3200,
+      lg: 1200,
+      xl: 2560,
+      xxl: 3200,
     },
   },
   css: ['~/assets/styles/main.css'],

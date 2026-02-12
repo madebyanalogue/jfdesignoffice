@@ -1,37 +1,37 @@
 <template>
   <div class="page">
     <div v-if="error">
-      <p>Error loading page: {{ error.message }}</p>
-    </div>
+    <p>Error loading page: {{ error.message }}</p>
+  </div>
     <div v-else-if="page">
-      <div v-if="sections.length === 0" style="padding: var(--gutter);">
-        <p>No sections found for this page. Add sections in Sanity.</p>
-      </div>
-      <div v-for="section in sections" :key="section._id" class="page-section">
-        <PageSectionFeaturedProjects
-          v-if="section.sectionType === 'featuredProjects'"
-          :section="section"
-        />
-        <PageSectionInfo
-          v-else-if="section.sectionType === 'info'"
-          :section="section"
-        />
-        <PageSectionServices
-          v-else-if="section.sectionType === 'services'"
-          :section="section"
-        />
-        <PageSectionPressAwards
-          v-else-if="section.sectionType === 'pressAwards'"
-          :section="section"
-        />
-        <PageSectionPortfolio
-          v-else-if="section.sectionType === 'portfolio'"
-          :section="section"
-        />
-      </div>
+    <div v-if="sections.length === 0" style="padding: var(--gutter);">
+      <p>No sections found for this page. Add sections in Sanity.</p>
     </div>
+    <div v-for="section in sections" :key="section._id" class="page-section">
+      <PageSectionFeaturedProjects
+        v-if="section.sectionType === 'featuredProjects'"
+        :section="section"
+      />
+      <PageSectionInfo
+        v-else-if="section.sectionType === 'info'"
+        :section="section"
+      />
+      <PageSectionServices
+        v-else-if="section.sectionType === 'services'"
+        :section="section"
+      />
+      <PageSectionPressAwards
+        v-else-if="section.sectionType === 'pressAwards'"
+        :section="section"
+      />
+      <PageSectionPortfolio
+        v-else-if="section.sectionType === 'portfolio'"
+        :section="section"
+      />
+    </div>
+  </div>
     <div v-else>
-      <p>Page not found</p>
+    <p>Page not found</p>
     </div>
   </div>
 </template>
