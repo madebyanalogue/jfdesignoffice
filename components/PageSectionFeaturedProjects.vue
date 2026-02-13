@@ -13,12 +13,14 @@
       >
         <div class="featured-project-image-container">
           <div class="featured-project-image-wrapper">
-        <NuxtImg
-                v-if="item.project?.featuredImage?.asset"
-                :src="item.project.featuredImage.asset.url || ''"
-                alt=""
-          class="featured-project-image"
-        />
+            <NuxtImg
+              v-if="item.project?.featuredImage?.asset"
+              :src="item.project.featuredImage.asset.url || ''"
+              alt=""
+              class="featured-project-image"
+              width="3200"
+              :height="item.project.featuredImage.asset.metadata?.dimensions?.height"
+            />
           </div>
         </div>
         <h3 class="featured-project-title"><span>{{ item.project.title }}</span></h3>

@@ -9,16 +9,17 @@
     <div v-else-if="project">
       <div v-if="project.heroImage?.asset" class="portfolio-hero">
         <div 
-          ref="heroImageContainerRef"
-          class="portfolio-hero-image-container"
-          :style="heroImageAspectRatio"
+          class="portfolio-image-container"
+          :style="getImageAspectRatio(project.heroImage.asset)"
         >
-          <img
-            :src="`${project.heroImage.asset.url}?w=1920&auto=format`"
+          <NuxtImg
+            :src="project.heroImage.asset.url || ''"
             :alt="project.title"
-            class="portfolio-hero-image"
+            width="3200"
+            :height="project.heroImage.asset.metadata?.dimensions?.height"
+            class="portfolio-image"
             loading="eager"
-            @load="onHeroImageLoad"
+            @load="onImageLoad"
           />
         </div>
       </div>
@@ -335,20 +336,6 @@ watch(pending, (isPending) => {
   setLoading(isPending)
 }, { immediate: true })
 
-// Calculate aspect ratio for hero image to prevent layout shift
-const heroImageAspectRatio = computed(() => {
-  if (project.value?.heroImage?.asset?.metadata?.dimensions) {
-    const { width, height, aspectRatio } = project.value.heroImage.asset.metadata.dimensions
-    if (aspectRatio) {
-      return { aspectRatio: `${aspectRatio}` }
-    } else if (width && height) {
-      return { aspectRatio: `${width / height}` }
-    }
-  }
-  // Fallback to a reasonable aspect ratio (16:9)
-  return { aspectRatio: '16 / 9' }
-})
-
 // Calculate aspect ratio for any image asset
 const getImageAspectRatio = (asset) => {
   if (asset?.metadata?.dimensions) {
@@ -364,18 +351,6 @@ const getImageAspectRatio = (asset) => {
 }
 
 // Handle image load to fade in
-const heroImageContainerRef = ref(null)
-const onHeroImageLoad = () => {
-  if (process.client && heroImageContainerRef.value) {
-    // Find the img element within the container
-    const img = heroImageContainerRef.value.querySelector('img')
-    if (img) {
-      img.classList.add('loaded')
-    }
-  }
-}
-
-// Handle regular image loads
 const onImageLoad = (event) => {
   if (process.client && event?.target) {
     event.target.classList.add('loaded')
@@ -388,18 +363,6 @@ const onVideoLoad = (event) => {
     event.target.classList.add('loaded')
   }
 }
-
-// Check if image is already loaded (for cached images)
-watch(() => project.value?.heroImage?.asset, () => {
-  if (process.client && project.value?.heroImage?.asset && heroImageContainerRef.value) {
-    nextTick(() => {
-      const img = heroImageContainerRef.value.querySelector('img')
-      if (img && img.complete && img.naturalHeight > 0) {
-        img.classList.add('loaded')
-      }
-    })
-  }
-}, { immediate: true })
 
 // Check all images on mount for cached images
 onMounted(() => {
@@ -433,27 +396,6 @@ onMounted(() => {
 .portfolio-hero {
   margin-bottom: var(--gutter);
   padding: 0px var(--gutter);
-}
-
-.portfolio-hero-image-container {
-  width: 100%;
-  position: relative;
-  overflow: hidden;
-  background-color: var(--background-color, #ffffff);
-}
-
-.portfolio-hero-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-  opacity: 0;
-  transition: opacity 0.3s ease-in;
-}
-
-.portfolio-hero-image[data-loaded="true"],
-.portfolio-hero-image.loaded {
-  opacity: 1;
 }
 
 .portfolio-info {
