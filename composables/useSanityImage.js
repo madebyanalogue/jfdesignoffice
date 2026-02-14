@@ -26,7 +26,7 @@ export const useSanityImage = () => {
         const match = String(id).match(/image-([^-]+)-(\d+)x(\d+)-(\w+)/)
         if (match) {
           const [, assetId, width, height, ext] = match
-          return `https://cdn.sanity.io/images/kpljrloc/production/${assetId}-${width}x${height}.${ext}`
+          return `https://cdn.sanity.io/images/go8920y3/production/${assetId}-${width}x${height}.${ext}`
         }
       }
     } catch (e) {

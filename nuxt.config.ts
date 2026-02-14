@@ -12,7 +12,7 @@ export default defineNuxtConfig({
     '@nuxt/image',
   ],
   sanity: {
-    projectId: 'kpljrloc',
+    projectId: 'go8920y3',
     dataset: 'production',
     useCdn: true,
     apiVersion: '2024-03-19',
@@ -24,14 +24,14 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       sanity: {
-        projectId: 'kpljrloc',
+        projectId: 'go8920y3',
         dataset: 'production',
       },
     },
   },
   image: {
     sanity: {
-      projectId: 'kpljrloc',
+      projectId: 'go8920y3',
       dataset: 'production',
     },
     quality: 80,
@@ -54,7 +54,7 @@ export default defineNuxtConfig({
   },
   app: {
     head: {
-      title: 'JF Design Office',
+      title: 'Roleplay',
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },

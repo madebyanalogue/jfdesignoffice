@@ -1,19 +1,19 @@
-# JF Design Office Nuxt Frontend
+# Roleplay Nuxt Frontend
 
-This repository contains **only** the Nuxt frontend code for the `JF Design Office` project.
+This repository contains **only** the Nuxt frontend code for the `Roleplay` project.
 
-- **GitHub repository URL**: `https://github.com/madebyanalogue/jfdesignoffice.git`
-- **Important**: This folder (`jfdesignoffice-nuxt`) is the only folder committed to git. The Sanity Studio is kept separately.
+- **GitHub repository URL**: `https://github.com/madebyanalogue/roleplay.git`
+- **Important**: This folder (`roleplay-nuxt`) is the only folder committed to git. The Sanity Studio is kept separately.
 
 ## Project Structure
 
 ```
-jfdesignoffice/
-├── jfdesignoffice-nuxt/      ← This folder (Nuxt code only - committed to git)
-└── jfdesignoffice-studio/    ← Sanity Studio (all Sanity code - NOT committed to git)
+roleplay/
+├── roleplay-nuxt/      ← This folder (Nuxt code only - committed to git)
+└── roleplay-studio/    ← Sanity Studio (all Sanity code - NOT committed to git)
 ```
 
-**Note**: The Sanity Studio (`jfdesignoffice-studio`) contains all Sanity schemas, configuration, and structure. It is kept as a separate folder and is **not** part of this git repository. Only the Nuxt frontend code in this folder is committed to `madebyanalogue/jfdesignoffice`.
+**Note**: The Sanity Studio (`roleplay-studio`) contains all Sanity schemas, configuration, and structure. It is kept as a separate folder and is **not** part of this git repository. Only the Nuxt frontend code in this folder is committed to `madebyanalogue/roleplay`.
 
 ## Setup
 

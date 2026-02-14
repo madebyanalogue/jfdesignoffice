@@ -117,7 +117,7 @@ const { data: page, pending, error } = useAsyncData(
     
     if (process.server) {
       const config = useRuntimeConfig()
-      const projectId = config.public.sanity?.projectId || 'kpljrloc'
+      const projectId = config.public.sanity?.projectId || 'go8920y3'
       const dataset = config.public.sanity?.dataset || 'production'
       
       try {

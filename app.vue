@@ -440,8 +440,8 @@ watch(headerType, () => {
 
 useHead(() => {
   const meta = []
-  const siteTitle = seoTitle.value || 'JF Design Office'
-  const siteUrl = process.client ? window.location.origin : 'https://www.jfdesignoffice.com'
+  const siteTitle = seoTitle.value || 'Roleplay'
+  const siteUrl = process.client ? window.location.origin : 'https://roleplay.example.com'
   const currentUrl = process.client ? window.location.href : siteUrl
   
   // Meta description

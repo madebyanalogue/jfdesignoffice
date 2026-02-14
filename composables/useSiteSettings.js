@@ -74,7 +74,7 @@ export const useSiteSettings = () => {
   const { data: settings } = useAsyncData('siteSettings', async () => {
     if (process.server) {
       const config = useRuntimeConfig()
-      const projectId = config.public.sanity?.projectId || 'kpljrloc'
+      const projectId = config.public.sanity?.projectId || 'go8920y3'
       const dataset = config.public.sanity?.dataset || 'production'
       
       return await $fetch(`https://${projectId}.apicdn.sanity.io/v2021-10-21/data/query/${dataset}`, {
@@ -91,8 +91,8 @@ export const useSiteSettings = () => {
 
   const maxWidth = computed(() => settings.value?.maxWidth || '1800px')
   const logo = computed(() => settings.value?.logo || [])
-  const title = computed(() => settings.value?.title || 'JF Design Office')
-  const seoTitle = computed(() => settings.value?.seoTitle || 'JF Design Office')
+  const title = computed(() => settings.value?.title || 'Roleplay')
+  const seoTitle = computed(() => settings.value?.seoTitle || 'Roleplay')
   const seoDescription = computed(() => settings.value?.seoDescription || '')
   const disablePreloader = computed(() => settings.value?.disablePreloader === true)
   const preloaderImages = computed(() => settings.value?.preloaderImages || [])
@@ -115,13 +115,13 @@ export const useSiteSettings = () => {
       const match = String(asset._id).match(/image-([^-]+)-(\d+)x(\d+)-(\w+)/)
       if (match) {
         const [, assetId, width, height, ext] = match
-        return `https://cdn.sanity.io/images/kpljrloc/production/${assetId}-${width}x${height}.${ext}`
+        return `https://cdn.sanity.io/images/go8920y3/production/${assetId}-${width}x${height}.${ext}`
       }
     }
     
     if (asset._ref) {
       const [file, id, extension] = asset._ref.replace('image-', '').split('-')
-    return `https://cdn.sanity.io/images/kpljrloc/production/${id}.${extension}`
+    return `https://cdn.sanity.io/images/go8920y3/production/${id}.${extension}`
     }
     
     return null
