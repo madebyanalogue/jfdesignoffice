@@ -10,7 +10,7 @@
         {{ span.text }}
       </component>
     </span>
-    <span v-else>JF</span>
+    <span v-else>JF Design Office</span>
   </div>
 </template>
 
