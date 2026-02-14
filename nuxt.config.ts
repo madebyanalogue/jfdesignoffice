@@ -12,7 +12,7 @@ export default defineNuxtConfig({
     '@nuxt/image',
   ],
   sanity: {
-    projectId: 'go8920y3',
+    projectId: 'kpljrloc',
     dataset: 'production',
     useCdn: true,
     apiVersion: '2024-03-19',
@@ -24,14 +24,14 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       sanity: {
-        projectId: 'go8920y3',
+        projectId: 'kpljrloc',
         dataset: 'production',
       },
     },
   },
   image: {
     sanity: {
-      projectId: 'go8920y3',
+      projectId: 'kpljrloc',
       dataset: 'production',
     },
     quality: 80,

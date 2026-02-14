@@ -58,7 +58,7 @@ const { data: projects, pending } = useAsyncData('portfolio', async () => {
   
   if (process.server) {
     const config = useRuntimeConfig()
-    const projectId = config.public.sanity?.projectId || 'go8920y3'
+    const projectId = config.public.sanity?.projectId || 'kpljrloc'
     const dataset = config.public.sanity?.dataset || 'production'
     
     return await $fetch(`https://${projectId}.apicdn.sanity.io/v2021-10-21/data/query/${dataset}`, {

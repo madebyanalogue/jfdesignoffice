@@ -10,7 +10,7 @@ export default defineEventHandler(async (event) => {
   }
 
   const config = useRuntimeConfig()
-  const projectId = config.public.sanity?.projectId || 'go8920y3'
+  const projectId = config.public.sanity?.projectId || 'kpljrloc'
   const dataset = config.public.sanity?.dataset || 'production'
   const useCdn = true
   

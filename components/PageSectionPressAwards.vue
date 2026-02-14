@@ -21,7 +21,7 @@ const { data: pressAwards } = useAsyncData('press-awards', async () => {
   
   if (process.server) {
     const config = useRuntimeConfig()
-    const projectId = config.public.sanity?.projectId || 'go8920y3'
+    const projectId = config.public.sanity?.projectId || 'kpljrloc'
     const dataset = config.public.sanity?.dataset || 'production'
     
     try {
